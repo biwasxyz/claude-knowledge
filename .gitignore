@@ -1,0 +1,12 @@
+# Raw session logs (ephemeral)
+logs/*.raw.md
+logs/*.raw.json
+
+# Local/temporary files
+*.tmp
+*.bak
+.DS_Store
+
+# Keep the HTML viewer and curated logs
+!logs/index.html
+!logs/*.summary.md

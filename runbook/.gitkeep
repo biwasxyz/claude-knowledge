@@ -1,0 +1,9 @@
+# Runbook
+
+Operational procedures and step-by-step guides.
+
+## Naming Convention
+- `deploy-*.md` - Deployment procedures
+- `debug-*.md` - Debugging guides
+- `setup-*.md` - Environment setup
+- `recover-*.md` - Recovery procedures
