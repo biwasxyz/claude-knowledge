@@ -132,11 +132,64 @@ clarinet deployments apply -p deployments/default.mainnet-plan.yaml
 - Use `Cl.standardPrincipal()` for addresses
 - Use `Cl.contractPrincipal(deployer, "contract")` for contracts
 
+## Testing Workflow
+
+### Daily Development Loop
+
+```bash
+# 1. Edit contract
+# 2. Check syntax
+clarinet check
+
+# 3. Run tests
+npm test
+
+# 4. Format before commit
+clarinet format --in-place
+```
+
+### Full Test Suite (Pre-PR)
+
+```bash
+# Unit + integration tests
+npm test
+
+# Property-based fuzzing (if configured)
+npm run test:rv
+
+# Invariant checks (if configured)
+npm run test:rv:invariant
+```
+
+### Pre-Mainnet Validation
+
+```bash
+# Stxer simulation against mainnet fork
+npm run test:stxer
+```
+
+### Testing Tool Selection
+
+| Stage | Tool | Why |
+|-------|------|-----|
+| Development | Clarinet SDK | Fast feedback, type-safe |
+| Pure logic | Clarunit | Test Clarity with Clarity |
+| Edge cases | RV | Find bugs unit tests miss |
+| Pre-deploy | Stxer | Validate against real state |
+
+See `patterns/clarity-testing.md` for detailed tool reference.
+
 ## Useful Tools
 
 | Tool | Purpose |
 |------|---------|
 | Clarinet | Local dev, testing, deployment |
+| Clarinet SDK | TypeScript test framework |
+| Clarunit | Clarity-native unit tests |
+| RV (Rendezvous) | Property-based fuzzing |
+| Stxer | Mainnet simulation |
+| Clarigen | Type generation from contracts |
+| Secondlayer | Alternative type generator |
 | Stacks Explorer | Verify transactions, view contracts |
 | Stacks.js | Build and broadcast transactions |
 | Hiro API | Query chain data |
@@ -147,3 +200,8 @@ Good examples to study:
 - `~/dev/aibtc/aibtcdev-daos/contracts/` - DAO patterns
 - `~/dev/citycoins/protocol/contracts/` - Token and treasury patterns
 - `~/dev/stx-labs/clarity-starter/` - Basic templates
+
+## Reference Testing Project
+
+Full testing stack example:
+- https://github.com/friedger/clarity-ccip-026 - All 4 tools integrated
