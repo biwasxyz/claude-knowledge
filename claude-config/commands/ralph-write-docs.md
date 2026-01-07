@@ -74,7 +74,10 @@ Create `docs/_config.yml`:
 ```yaml
 title: Project Name
 description: Auto-generated documentation
-theme: just-the-docs
+remote_theme: just-the-docs/just-the-docs
+
+plugins:
+  - jekyll-remote-theme
 
 url: https://USERNAME.github.io
 baseurl: /REPO-NAME
@@ -109,7 +112,7 @@ Create `docs/Gemfile`:
 source "https://rubygems.org"
 
 gem "jekyll", "~> 4.3"
-gem "just-the-docs", "~> 0.10"
+gem "jekyll-remote-theme"
 ```
 
 ### 4. GitHub Actions Workflow
