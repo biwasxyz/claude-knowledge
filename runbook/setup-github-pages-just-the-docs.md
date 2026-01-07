@@ -2,6 +2,64 @@
 
 A step-by-step guide for setting up GitHub Pages documentation using the just-the-docs Jekyll theme.
 
+## Quick Start (Automated)
+
+Use the `/ralph-write-docs` skill for automated generation:
+
+```
+/ralph-write-docs
+```
+
+This creates:
+- `docs/` folder with just-the-docs theme
+- `docs/_config.yml` - Jekyll configuration
+- `docs/Gemfile` - Ruby dependencies
+- `docs/index.md` - Home page
+- `docs/*.md` - Source code and API documentation
+- `.github/workflows/pages.yml` - GitHub Actions deployment
+
+After running, verify and update `.gitignore`:
+
+```gitignore
+# Ralph docs state (local only)
+ralph-docs.json
+
+# Jekyll
+docs/_site
+docs/.sass-cache
+docs/.jekyll-cache
+docs/.jekyll-metadata
+docs/Gemfile.lock
+docs/vendor
+```
+
+Then enable GitHub Pages in Settings > Pages > Source: "GitHub Actions"
+
+---
+
+## Fork Workflow
+
+When generating docs for a fork to PR upstream:
+
+1. Run `/ralph-write-docs` on your fork
+2. **CRITICAL**: Search and replace your username with upstream owner:
+   ```bash
+   grep -r "YOUR_USERNAME" docs/
+   ```
+3. Update these files:
+   - `docs/_config.yml` - `url` and `aux_links` GitHub URL
+   - Any markdown files with GitHub links (e.g., `docs/src.md`)
+   - Example data (e.g., BNS names in API examples)
+4. Commit and push to your fork
+5. Create PR to upstream with note about enabling GitHub Pages
+6. Include link to your fork's live docs as example
+
+---
+
+## Manual Setup
+
+For manual setup or customization, follow the steps below.
+
 ## When to Use
 
 - API documentation for Cloudflare Workers or serverless functions
