@@ -1,29 +1,40 @@
-# Daily Git Summary Skill
+# Daily Summary Skill
 
-Scans all git repositories under `~/dev` and generates a summary of commits for a specified date.
+Generates a team-friendly daily summary of work across all git repositories.
 
 ## Files
 
-- `daily-git-summary.sh` - Bash script that finds all `.git` directories and runs `git log` for the date
+- `daily-git-summary.sh` - Bash script that collects raw git/GitHub data
+- `TEMPLATE.md` - Template for the team summary format
 
 ## Usage
 
-The `/daily` command invokes this skill with an optional date argument.
-
 ```bash
-# Run directly
-~/.claude/skills/daily/daily-git-summary.sh 2026-01-06
-
-# Or via Claude command
 /daily           # Uses today's date
 /daily 2026-01-05  # Specific date
 ```
 
-## Output
+## Output Files
 
-Returns commits grouped by repository with commit counts:
-```
-### org/repo-name (N commits)
-abc1234 commit message
-def5678 another message
-```
+Two files are generated per run:
+
+| File | Purpose |
+|------|---------|
+| `~/logs/DATETIME-daily-github-summary.md` | Raw script output (one per run) |
+| `~/logs/YYYY-MM-DD-daily-summary.md` | Team summary (one per day, updated in place) |
+
+## Summary Format
+
+The team summary includes:
+
+- **Highlights** - 2-4 sentences on main accomplishments
+- **Commits table** - Repos with commit counts and summaries
+- **GitHub Activity** - Issues and PRs in table format
+- **Notes** - Optional blockers or follow-ups
+
+## Update Behavior
+
+When run multiple times on the same day:
+- Raw data files accumulate (timestamped)
+- Team summary updates in place (preserves manual notes)
+- "Last updated" timestamp refreshes

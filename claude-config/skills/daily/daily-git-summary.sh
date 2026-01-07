@@ -2,9 +2,20 @@
 # Daily Git Summary Script
 # Scans all git repos under ~/dev and reports commits for a given date
 # Usage: daily-git-summary.sh [YYYY-MM-DD]
+#
+# Output: Logs saved to ~/logs/YYYY-MM-DDTHH-MM-SS-daily-summary.md
 
 DATE="${1:-$(date +%Y-%m-%d)}"
 DEV_DIR="${2:-$HOME/dev}"
+
+# Setup logging
+LOG_DIR="${HOME}/logs"
+TIMESTAMP=$(date +%Y-%m-%dT%H-%M-%S)
+LOG_FILE="${LOG_DIR}/${TIMESTAMP}-daily-github-summary.md"
+mkdir -p "$LOG_DIR"
+
+# Use exec to redirect all output to both terminal and log file
+exec > >(tee "$LOG_FILE") 2>&1
 
 echo "=== Git Activity for $DATE ==="
 echo ""
@@ -82,3 +93,5 @@ fi
 
 echo ""
 echo "=== End of Summary ==="
+echo ""
+echo "Log saved: $LOG_FILE"
