@@ -63,11 +63,26 @@ Knowledge is categorized and stored in the appropriate location for future sessi
 
 ## Local Resources
 
-Key repositories with documentation (customize to your setup):
-- `~/dev/clarity-lang/book/` - Clarity language reference
-- `~/dev/hirosystems/stacks.js/` - Stacks.js library
-- `~/dev/hirosystems/clarinet/` - Clarinet framework
-- `~/dev/stacks-network/docs/` - Stacks documentation
+Clone these repositories for additional context (customize paths to your setup):
+
+### Core Documentation
+- `~/dev/clarity-lang/book/` - [Clarity language book](https://github.com/clarity-lang/book)
+- `~/dev/stacks-network/docs/` - [Official Stacks documentation](https://github.com/stacks-network/docs)
+
+### Developer Tools
+- `~/dev/hirosystems/clarinet/` - [Clarinet framework](https://github.com/hirosystems/clarinet)
+- `~/dev/hirosystems/stacks.js/` - [Stacks.js library](https://github.com/hirosystems/stacks.js)
+
+### Security & Best Practices
+- `~/dev/stx-labs/security-handbook/` - Smart contract security guide
+- `~/dev/stx-labs/papers/` - Technical papers and specifications
+
+### Example Contracts
+- `~/dev/citycoins/protocol/` - [CityCoins contracts](https://github.com/citycoins/protocol) - Treasury, token, DAO patterns
+- `~/dev/aibtcdev/aibtcdev-daos/` - [AIBTC DAO contracts](https://github.com/aibtcdev/aibtcdev-daos) - Agent, proposal patterns
+
+### Authentication
+- `~/dev/pradel/sign-in-with-stacks/` - [SIWS library](https://github.com/pradel/sign-in-with-stacks) - Wallet authentication
 
 ## External APIs
 
