@@ -1,0 +1,76 @@
+# Claude Code Knowledge Base
+
+This file loads automatically with every Claude Code session.
+Place your customized version at `~/.claude/CLAUDE.md`.
+
+## Knowledge Base Location
+
+All persistent knowledge lives in: `~/dev/$USERNAME/claude-knowledge/`
+
+When answering questions or making decisions, check relevant knowledge first:
+- `decisions/` - Architecture Decision Records (how we decided to do things)
+- `runbook/` - Operational procedures (how to do things)
+- `context/` - Project background and requirements
+- `patterns/` - Recurring solutions and gotchas
+- `nuggets/` - Quick facts and learnings from sessions
+
+## Quick Facts (Always Loaded)
+
+### Deployment & Build
+
+- **Cloudflare**: Do NOT run `npm run deploy`. Use dry run to verify build, then commit and push for automatic deployment.
+
+### Clarity / Stacks
+
+- Clarity does NOT have a `lambda` keyword - use `define-private` for internal functions
+- Always run `clarinet check` before committing contract changes
+- Use `stacks-block-height` not `block-height` (legacy) for current block
+- Token ops: check `tx-sender`; non-token guards: check `contract-caller`
+- Use `try!` for error propagation, `unwrap!` only when certain of value
+
+### Clarity Testing
+
+- **Clarinet**: Local binary for `clarinet check` (syntax), `clarinet format` (lint), deployment
+- **Clarinet SDK**: TypeScript testing with vitest - use `npm test`
+  - NO `beforeAll`/`beforeEach` - simnet resets each session
+  - Use arrange-act-assert format, prefer functions over arrow functions
+  - Clarity values to JS: `cvToValue()`, `cvToJSON()`; use clarigen or secondlayer for type generation
+- **Clarunit**: Test Clarity with Clarity - special cases, pure logic testing
+- **RV (Rendezvous)**: Property-based fuzzing - essential for treasuries, DAOs, battle-grade contracts
+- **Stxer**: Mainnet fork simulation - use pre-mainnet for governance flows
+- Example repo (all 4 tools): https://github.com/friedger/clarity-ccip-026
+
+### Git Workflow
+
+- All repos in `~/dev/` named as `org/repo` to match GitHub
+- Forks: set `upstream` remote via `gh repo fork` or manually
+- Commit messages follow conventional commits: `type(scope): message`
+- Always rebase feature branches on main before PR
+- Delete branches after merge (local and remote)
+
+### GitHub CLI
+
+- Use `issues` not `openIssues` when querying repos via `gh` - field names differ from web interface
+- Always verify field names against actual API responses before using in scripts
+
+## Adding Knowledge
+
+Use `/learn` to capture new knowledge during sessions. Examples:
+- `/learn cloudflare: always use wrangler dev before deploying`
+- `/learn clarity: use (try!) not (unwrap!) for recoverable errors`
+
+Knowledge is categorized and stored in the appropriate location for future sessions.
+
+## Local Resources
+
+Key repositories with documentation (customize to your setup):
+- `~/dev/clarity-lang/book/` - Clarity language reference
+- `~/dev/hirosystems/stacks.js/` - Stacks.js library
+- `~/dev/hirosystems/clarinet/` - Clarinet framework
+- `~/dev/stacks-network/docs/` - Stacks documentation
+
+## External APIs
+
+- **Tenero API** (formerly STXTools): Market data, trading analytics, wallet/token data for Stacks
+  - Base URL: `https://api.tenero.io`
+  - Docs: https://docs.tenero.io/
