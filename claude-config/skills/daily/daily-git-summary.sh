@@ -70,8 +70,20 @@ echo "$CURRENT_REPOS" > "$STATE_FILE"
 echo "=== Git Activity for $DATE ==="
 echo ""
 
+# Get repo visibility from GitHub API
+get_repo_visibility() {
+  local repo_name="$1"
+  local visibility
+  visibility=$(gh repo view "$repo_name" --json visibility --jq '.visibility' 2>/dev/null | tr '[:upper:]' '[:lower:]')
+  if [ -n "$visibility" ]; then
+    echo "$visibility"
+  else
+    echo "local"
+  fi
+}
+
 # Find all git repos and check for commits
-find "$DEV_DIR" -type d -name ".git" 2>/dev/null | sort | while read gitdir; do
+while IFS= read -r gitdir; do
   repo=$(dirname "$gitdir")
   repo_name=$(echo "$repo" | sed "s|$HOME/dev/||")
 
@@ -80,11 +92,12 @@ find "$DEV_DIR" -type d -name ".git" 2>/dev/null | sort | while read gitdir; do
 
   if [ -n "$commits" ]; then
     count=$(echo "$commits" | wc -l)
-    echo "### $repo_name ($count commits)"
+    visibility=$(get_repo_visibility "$repo_name")
+    echo "### $repo_name ($visibility) - $count commits"
     echo "$commits"
     echo ""
   fi
-done
+done < <(find "$DEV_DIR" -type d -name ".git" 2>/dev/null | sort)
 
 echo "=== GitHub Activity ==="
 echo ""

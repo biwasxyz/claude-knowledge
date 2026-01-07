@@ -120,4 +120,4 @@ Prevent spam/abuse with block-based limits:
 ### References
 - Clarity Language Book: `~/dev/clarity-lang/book/`
 - Security Handbook: `~/dev/stx-labs/security-handbook/`
-- Example Contracts: `~/dev/aibtc/aibtcdev-daos/contracts/`
+- Example Contracts: `~/dev/aibtcdev/aibtcdev-daos/contracts/`

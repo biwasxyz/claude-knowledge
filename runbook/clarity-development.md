@@ -197,7 +197,7 @@ See `patterns/clarity-testing.md` for detailed tool reference.
 ## Reference Contracts
 
 Good examples to study:
-- `~/dev/aibtc/aibtcdev-daos/contracts/` - DAO patterns
+- `~/dev/aibtcdev/aibtcdev-daos/contracts/` - DAO patterns
 - `~/dev/citycoins/protocol/contracts/` - Token and treasury patterns
 - `~/dev/stx-labs/clarity-starter/` - Basic templates
 

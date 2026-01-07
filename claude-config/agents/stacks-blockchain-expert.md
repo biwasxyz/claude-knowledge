@@ -20,7 +20,7 @@ Reference these paths when helping with Stacks development:
 - `~/dev/stx-labs/security-handbook/` - Security best practices
 - `~/dev/stx-labs/papers/` - Technical papers and specifications
 - `~/dev/stacks-network/docs/` - Official Stacks documentation
-- `~/dev/aibtc/` - AIBTC dev projects and contracts
+- `~/dev/aibtcdev/` - AIBTC dev projects and contracts
 
 ## Workflow
 1. Check local resources first before web searches

@@ -1,11 +1,6 @@
 # Daily Summary Skill
 
-Generates a team-friendly daily summary of work across all git repositories.
-
-## Files
-
-- `daily-git-summary.sh` - Bash script that collects raw git/GitHub data
-- `TEMPLATE.md` - Template for the team summary format
+Generates and publishes a team-friendly daily summary of work across all git repositories.
 
 ## Usage
 
@@ -14,27 +9,18 @@ Generates a team-friendly daily summary of work across all git repositories.
 /daily 2026-01-05  # Specific date
 ```
 
-## Output Files
+## Workflow
 
-Two files are generated per run:
+Follow the runbook: `~/dev/whoabuddy/claude-knowledge/runbook/daily-summary.md`
+
+1. **Collect** - Run `daily-git-summary.sh` to gather raw data
+2. **Interpret** - Create/update team summary using TEMPLATE.md
+3. **Sync** - Copy to `~/dev/whoabuddy/claude-logs/_posts/`
+4. **Push** - Commit and push to trigger GitHub Pages build
+
+## Files
 
 | File | Purpose |
 |------|---------|
-| `~/logs/DATETIME-daily-github-summary.md` | Raw script output (one per run) |
-| `~/logs/YYYY-MM-DD-daily-summary.md` | Team summary (one per day, updated in place) |
-
-## Summary Format
-
-The team summary includes:
-
-- **Highlights** - 2-4 sentences on main accomplishments
-- **Commits table** - Repos with commit counts and summaries
-- **GitHub Activity** - Issues and PRs in table format
-- **Notes** - Optional blockers or follow-ups
-
-## Update Behavior
-
-When run multiple times on the same day:
-- Raw data files accumulate (timestamped)
-- Team summary updates in place (preserves manual notes)
-- "Last updated" timestamp refreshes
+| `daily-git-summary.sh` | Bash helper for raw data collection |
+| `TEMPLATE.md` | Summary format template |
