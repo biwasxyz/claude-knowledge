@@ -6,6 +6,15 @@
 
 {2-4 sentences summarizing the day's main accomplishments, themes, or focus areas. Written in first person plural ("We...") for team context.}
 
+## Repository Changes
+
+{If repos were added or removed, list them here. Otherwise omit this section.}
+
+| Action | Repo |
+|--------|------|
+| Added | {org/repo} |
+| Removed | {org/repo} |
+
 ## Commits
 
 | Repo | Count | Summary |
