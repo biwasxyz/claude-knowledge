@@ -6,7 +6,7 @@ argument-hint: [topic or task description]
 
 Gather relevant context for the task: $ARGUMENTS
 
-1. **Search knowledge base** at `~/dev/whoabuddy/claude-knowledge/`
+1. **Search knowledge base** at `$CLAUDE_KNOWLEDGE_PATH`
    - Check `decisions/` for relevant ADRs
    - Check `patterns/` for applicable patterns
    - Check `runbook/` for related procedures

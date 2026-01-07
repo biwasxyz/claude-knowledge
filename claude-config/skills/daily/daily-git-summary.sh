@@ -25,25 +25,6 @@ find "$DEV_DIR" -type d -name ".git" 2>/dev/null | sort | while read gitdir; do
   fi
 done
 
-echo "=== schism-dev Agent Activity ==="
-echo ""
-
-# Check schism repo for schism-dev commits
-SCHISM_DIR="$DEV_DIR/stacklets/schism"
-if [ -d "$SCHISM_DIR/.git" ]; then
-  schism_commits=$(cd "$SCHISM_DIR" && git log --oneline --author="schism-dev" --since="$DATE 00:00:00" --until="$DATE 23:59:59" 2>/dev/null)
-  if [ -n "$schism_commits" ]; then
-    count=$(echo "$schism_commits" | wc -l)
-    echo "schism-dev made $count commits:"
-    echo "$schism_commits"
-  else
-    echo "No commits by schism-dev today."
-  fi
-else
-  echo "schism repo not found at $SCHISM_DIR"
-fi
-
-echo ""
 echo "=== GitHub Activity ==="
 echo ""
 

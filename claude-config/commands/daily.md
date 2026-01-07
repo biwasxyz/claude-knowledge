@@ -14,7 +14,7 @@ Generate a concise daily summary of work across all git repositories for a non-t
    ~/.claude/skills/daily/daily-git-summary.sh $ARGUMENTS
    ```
 
-   This scans all 40+ repos under `~/dev` and returns commits for the date.
+   This scans all repos under `~/dev` and returns commits for the date.
 
 2. **Analyze the output**
    - Group commits by project/repo
@@ -35,10 +35,6 @@ Generate a concise daily summary of work across all git repositories for a non-t
 
    ### Projects Touched
    [Simple list of project names with one-line descriptions]
-
-   ### Agent Activity
-   [One line about schism-dev if it made commits, otherwise omit this section]
-   - Example: "schism-dev processed 3 automated tasks"
 
    ### Progress Made
    [Brief narrative: what moved forward today, any blockers resolved]

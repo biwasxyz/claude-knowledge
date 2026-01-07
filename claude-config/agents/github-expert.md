@@ -72,9 +72,9 @@ gh workflow run deploy.yml
 
 ## Knowledge Base
 
-Before answering, check for relevant learnings:
-- `~/dev/whoabuddy/claude-knowledge/nuggets/github.md` - GitHub-specific gotchas
-- `~/dev/whoabuddy/claude-knowledge/runbook/` - Operational procedures
+Before answering, check `$CLAUDE_KNOWLEDGE_PATH` for relevant learnings:
+- `nuggets/github.md` - GitHub-specific gotchas
+- `runbook/` - Operational procedures
 
 ## Response Style
 - Show exact commands to run

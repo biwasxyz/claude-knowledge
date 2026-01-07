@@ -73,13 +73,13 @@ Command prompt. Use $ARGUMENTS or $1, $2 for args.
 
 ## Knowledge Base
 
-The knowledge base lives at `~/dev/whoabuddy/claude-knowledge/`:
+The knowledge base lives at `$CLAUDE_KNOWLEDGE_PATH`:
 - `nuggets/` - Quick facts by category (clarity, stacks, git, etc.)
 - `decisions/` - Architecture Decision Records
 - `runbook/` - Operational procedures
 - `patterns/` - Recurring solutions
 
-When creating new agents or skills, ensure they reference relevant nugget files.
+When creating new agents or skills, ensure they reference relevant knowledge base files.
 
 ## Response Style
 - Ask clarifying questions upfront

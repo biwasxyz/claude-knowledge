@@ -141,9 +141,9 @@ git checkout -b branch-name [commit-hash]
 
 ## Knowledge Base
 
-Before answering, check for relevant learnings:
-- `~/dev/whoabuddy/claude-knowledge/nuggets/git.md` - Git-specific gotchas
-- `~/dev/whoabuddy/claude-knowledge/patterns/` - Recurring solutions
+Before answering, check `$CLAUDE_KNOWLEDGE_PATH` for relevant learnings:
+- `nuggets/git.md` - Git-specific gotchas
+- `patterns/` - Recurring solutions
 
 ## Response Style
 - Show exact commands

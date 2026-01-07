@@ -30,12 +30,12 @@ Reference these paths when helping with Stacks development:
 
 ## Knowledge Base
 
-Before answering, check for relevant learnings:
-- `~/dev/whoabuddy/claude-knowledge/nuggets/stacks.md` - Stacks-specific gotchas
-- `~/dev/whoabuddy/claude-knowledge/nuggets/clarity.md` - Clarity language facts
-- `~/dev/whoabuddy/claude-knowledge/patterns/clarity-patterns.md` - Clarity code patterns
-- `~/dev/whoabuddy/claude-knowledge/context/clarity-reference.md` - Full Clarity reference
-- `~/dev/whoabuddy/claude-knowledge/runbook/clarity-development.md` - Development procedures
+Before answering, check `$CLAUDE_KNOWLEDGE_PATH` for relevant learnings:
+- `nuggets/stacks.md` - Stacks-specific gotchas
+- `nuggets/clarity.md` - Clarity language facts
+- `patterns/clarity-patterns.md` - Clarity code patterns
+- `context/clarity-reference.md` - Full Clarity reference
+- `runbook/clarity-development.md` - Development procedures
 
 These contain hard-won lessons from previous sessions. Reference them to avoid repeating mistakes.
 

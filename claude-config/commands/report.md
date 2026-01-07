@@ -17,7 +17,7 @@ Generate a session report summarizing the work completed.
    - Identify follow-up items
 
 3. **Generate report**
-   Save to `~/dev/whoabuddy/claude-knowledge/logs/[date]-[title].summary.md`:
+   Save to `~/logs/[date]-[title].summary.md`:
    ```markdown
    # Session Report: [Title or Date]
 
