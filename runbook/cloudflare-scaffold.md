@@ -43,8 +43,10 @@ After scaffolding, verify and enhance the structure:
 my-project/
 ├── src/
 │   └── index.ts          # Main entry point
+├── .env                   # Local credentials (gitignored)
+├── .gitignore
 ├── wrangler.jsonc         # Wrangler config (source of truth)
-├── package.json
+├── package.json           # npm scripts wrap wrangler
 ├── tsconfig.json
 └── vitest.config.ts       # If using vitest for testing
 ```
@@ -72,7 +74,66 @@ Use `wrangler.jsonc` (not `.toml`) for new projects:
 }
 ```
 
-## 3. Add Products as Needed
+## 3. Local Credentials Setup
+
+Keep Cloudflare credentials in a local `.env` file and wrap all wrangler commands through npm scripts.
+
+### Create .env File
+
+```bash
+# .env (add to .gitignore!)
+CLOUDFLARE_API_TOKEN=your-api-token-here
+CLOUDFLARE_ACCOUNT_ID=your-account-id-here
+```
+
+### Add to .gitignore
+
+```bash
+echo ".env" >> .gitignore
+```
+
+### Wrap Wrangler in package.json
+
+Add a base `wrangler` script that sources `.env` before running wrangler:
+
+```json
+{
+  "scripts": {
+    "wrangler": "set -a && . ./.env && set +a && wrangler",
+    "dev": "npm run wrangler -- dev",
+    "deploy": "npm run wrangler -- deploy",
+    "deploy:dry": "npm run wrangler -- deploy --dry-run",
+    "deploy:staging": "npm run wrangler -- deploy --env staging",
+    "tail": "npm run wrangler -- tail"
+  }
+}
+```
+
+### Usage
+
+All wrangler commands go through `npm run wrangler`:
+
+```bash
+# Dev server
+npm run dev
+
+# Deploy (dry run first)
+npm run deploy:dry
+npm run deploy
+
+# Any wrangler command
+npm run wrangler -- kv:namespace list
+npm run wrangler -- d1 migrations apply my-db
+npm run wrangler -- tail --env production
+```
+
+**Why this pattern?**
+- Credentials stay in `.env`, not shell history or global config
+- Team members use same workflow
+- Easy to switch accounts by editing `.env`
+- Works on any shell that supports `set -a`
+
+## 4. Add Products as Needed
 
 Check the official docs for each product before adding bindings.
 
@@ -154,16 +215,14 @@ Best for: Coordination, real-time state, WebSockets, rate limiting.
 
 **Docs**: https://developers.cloudflare.com/durable-objects/
 
-## 4. Local Development
+## 5. Local Development
 
 ```bash
-# Start dev server
+# Start dev server (uses .env credentials)
 npm run dev
-# or
-npx wrangler dev
 
 # With specific environment
-npx wrangler dev --env staging
+npm run wrangler -- dev --env staging
 ```
 
 ### Testing
@@ -176,22 +235,22 @@ npm test
 npx tsc --noEmit
 ```
 
-## 5. Deployment
+## 6. Deployment
 
 ### Dry Run First
 
 ```bash
-npx wrangler deploy --dry-run
+npm run deploy:dry
 ```
 
 ### Deploy to Environment
 
 ```bash
 # Staging
-npx wrangler deploy --env staging
+npm run deploy:staging
 
 # Production (prefer CI/CD)
-npx wrangler deploy --env production
+npm run deploy
 ```
 
 ### CI/CD Preferred
