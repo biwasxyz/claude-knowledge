@@ -141,6 +141,8 @@ This is an important callout.
 
 Create `.github/workflows/pages.yml`:
 
+**Important:** We use `ruby/setup-ruby` with bundler instead of `actions/jekyll-build-pages` because the latter only supports GitHub Pages whitelisted themes (not `just-the-docs`).
+
 ```yaml
 name: Deploy GitHub Pages
 
@@ -168,17 +170,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: docs
+
       - name: Setup Pages
+        id: pages
         uses: actions/configure-pages@v5
 
       - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./docs
-          destination: ./_site
+        working-directory: docs
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/_site
 
   deploy:
     environment:
