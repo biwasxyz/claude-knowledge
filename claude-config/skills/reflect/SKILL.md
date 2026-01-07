@@ -106,7 +106,7 @@ Example triggers:
 ## Integration with Knowledge Base
 
 Save reflections to:
-- `~/dev/whoabuddy/claude-knowledge/retrospectives/[date]-reflection.md`
+- `$CLAUDE_KNOWLEDGE_PATH/retrospectives/[date]-reflection.md`
 
 When patterns identified, suggest adding to:
-- `~/dev/whoabuddy/claude-knowledge/patterns/`
+- `$CLAUDE_KNOWLEDGE_PATH/patterns/`

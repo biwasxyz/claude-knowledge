@@ -52,7 +52,7 @@ Expected formats:
 
 ## Storage Location
 
-Base path: `~/dev/whoabuddy/claude-knowledge/nuggets/`
+Base path: `$CLAUDE_KNOWLEDGE_PATH/nuggets/`
 
 ## Response
 

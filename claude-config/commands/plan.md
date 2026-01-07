@@ -22,7 +22,7 @@ Create a detailed implementation plan for: $ARGUMENTS
    - Note potential risks or blockers
 
 4. **Create plan document**
-   Save to `~/dev/whoabuddy/claude-knowledge/notes/plan-[timestamp].md`:
+   Save to `$CLAUDE_KNOWLEDGE_PATH/notes/plan-[timestamp].md`:
    ```markdown
    # Plan: [Task Title]
 

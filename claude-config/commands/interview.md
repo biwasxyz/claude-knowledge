@@ -32,7 +32,7 @@ Conduct a requirements interview for: $ARGUMENTS
    - Dependencies on other work
 
 5. **Document requirements**
-   Save to `~/dev/whoabuddy/claude-knowledge/context/[project]-requirements.md`:
+   Save to `$CLAUDE_KNOWLEDGE_PATH/context/[project]-requirements.md`:
    ```markdown
    # Requirements: [Project Name]
 
