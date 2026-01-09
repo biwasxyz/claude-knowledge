@@ -8,10 +8,12 @@ A shared knowledge repository for AI-assisted development workflows. Clone this 
 # Clone the repo
 git clone https://github.com/whoabuddy/claude-knowledge ~/dev/<your-org>/claude-knowledge
 
-# Symlink shared config
+# Symlink agents and commands (shared)
 ln -sf ~/dev/<your-org>/claude-knowledge/claude-config/agents ~/.claude/agents
 ln -sf ~/dev/<your-org>/claude-knowledge/claude-config/commands ~/.claude/commands
-ln -sf ~/dev/<your-org>/claude-knowledge/claude-config/skills ~/.claude/skills
+
+# Copy skills (so you can add personal skills)
+cp -r ~/dev/<your-org>/claude-knowledge/claude-config/skills ~/.claude/skills
 
 # Restart Claude Code, then run setup
 /setup
@@ -35,9 +37,10 @@ claude-knowledge/
 
 ## How It Works
 
-1. **Shared config** lives in `claude-config/` - symlinked to `~/.claude/`
-2. **Personal CLAUDE.md** is generated from the shared reference
-3. **Knowledge** is organized by type and referenced from CLAUDE.md
+1. **Agents & commands** are symlinked to `claude-config/` (shared, auto-update on git pull)
+2. **Skills** are copied to `~/.claude/skills/` (allows adding personal skills)
+3. **Personal CLAUDE.md** is generated from the shared reference
+4. **Knowledge** is organized by type and referenced from CLAUDE.md
 
 ## Key Skills
 

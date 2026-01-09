@@ -6,7 +6,7 @@ Set up and maintain your personal Claude Code configuration from the team knowle
 
 ```bash
 /setup             # First-time setup or status check
-/setup update      # Update personal CLAUDE.md from shared reference
+/setup update      # Update CLAUDE.md and sync new skills from reference
 ```
 
 ## Workflow
@@ -15,13 +15,20 @@ Set up and maintain your personal Claude Code configuration from the team knowle
 
 1. **Detect knowledge base location**
    - Search `~/dev/` for `*/claude-knowledge` repos
-   - If not found, show clone instructions
+   - If not found, show clone instructions and exit
 
-2. **Check/create symlinks** for shared config:
+2. **Set up shared config**
+
+   **Symlink** agents and commands (shared, rarely need personal customization):
    ```bash
    ln -sf $KNOWLEDGE_BASE/claude-config/agents ~/.claude/agents
    ln -sf $KNOWLEDGE_BASE/claude-config/commands ~/.claude/commands
-   ln -sf $KNOWLEDGE_BASE/claude-config/skills ~/.claude/skills
+   ```
+
+   **Copy** skills (allows personal skills without affecting team repo):
+   ```bash
+   # Only if ~/.claude/skills doesn't exist
+   cp -r $KNOWLEDGE_BASE/claude-config/skills ~/.claude/skills
    ```
 
 3. **Generate personal CLAUDE.md**
@@ -36,42 +43,62 @@ Set up and maintain your personal Claude Code configuration from the team knowle
    ```
    SETUP COMPLETE
    ├── Knowledge base: ~/dev/<org>/claude-knowledge
-   ├── Symlinks: agents ✓ commands ✓ skills ✓
-   ├── CLAUDE.md: generated
+   ├── Agents: symlinked ✓
+   ├── Commands: symlinked ✓
+   ├── Skills: copied ✓ (add personal skills here)
+   ├── CLAUDE.md: generated ✓
    └── Next: restart Claude Code to load config
    ```
 
 ### Status Check (existing setup)
 
-If symlinks already exist, show current status:
-- Symlink targets and validity
+If already configured, show current status:
+- Knowledge base location
+- Symlink status (agents, commands)
+- Skills directory (copied vs symlinked)
 - CLAUDE.md last modified
-- Differences from shared reference (if any)
+- New skills available in knowledge base (if any)
 
 ### Update (`/setup update`)
 
-1. Read shared CLAUDE.md from knowledge base
-2. Read current personal CLAUDE.md
-3. **Preserve personal sections:**
-   - Knowledge Base Location (path)
-   - Local Resources (repo paths)
-   - Any `## Personal` sections
-4. **Update shared sections:**
-   - Quick Facts (all subsections)
-   - Adding Knowledge
-   - External APIs
-5. Show diff and confirm before applying
+1. **Update CLAUDE.md**
+   - Read shared CLAUDE.md from knowledge base
+   - Read current personal CLAUDE.md
+   - **Preserve personal sections:**
+     - Knowledge Base Location (path)
+     - Local Resources (repo paths)
+     - Any custom sections
+   - **Update shared sections:**
+     - Quick Facts (all subsections)
+     - Adding Knowledge
+     - External APIs
+   - Show diff and confirm before applying
 
-## Personal vs Shared Sections
+2. **Sync new skills** (optional)
+   - Compare `$KNOWLEDGE_BASE/claude-config/skills/` with `~/.claude/skills/`
+   - List new skills available in knowledge base
+   - Offer to copy new skills (won't overwrite existing)
+   - User can decline to keep their setup as-is
 
-| Section | Type | Behavior |
-|---------|------|----------|
-| Knowledge Base Location | Personal | Preserved, path customized |
-| Quick Facts | Shared | Updated from reference |
-| Adding Knowledge | Shared | Updated from reference |
-| External APIs | Shared | Updated from reference |
-| Local Resources | Personal | Preserved |
-| Custom sections | Personal | Preserved |
+## Personal vs Shared
+
+| Item | Method | Why |
+|------|--------|-----|
+| Agents | Symlink | Rarely need personal agents |
+| Commands | Symlink | Shared team commands |
+| Skills | Copy | Allows adding personal skills |
+| CLAUDE.md | Generate | Paths differ per user |
+
+## Adding Personal Skills
+
+After setup, create personal skills directly in `~/.claude/skills/`:
+
+```bash
+mkdir ~/.claude/skills/my-skill
+# Add SKILL.md with your skill definition
+```
+
+Personal skills won't affect the team repo. To share a skill with the team, copy it to the knowledge base and commit.
 
 ## Files
 
@@ -80,3 +107,4 @@ If symlinks already exist, show current status:
 | `SKILL.md` | This file | Skill documentation |
 | `CLAUDE.md` | Knowledge base root | Shared reference (source of truth) |
 | `CLAUDE.md` | `~/.claude/` | Personal config (generated) |
+| `skills/` | `~/.claude/` | Personal copy (can add custom skills) |
