@@ -1,13 +1,13 @@
-# Setup GitHub Pages with just-the-docs
+# Sprout Docs: GitHub Pages Mode
 
 A step-by-step guide for setting up GitHub Pages documentation using the just-the-docs Jekyll theme.
 
 ## Quick Start (Automated)
 
-Use the `/ralph-write-docs` skill for automated generation:
+Use the `/sprout-docs` skill with jekyll output mode:
 
 ```
-/ralph-write-docs
+/sprout-docs --output jekyll
 ```
 
 This creates:
@@ -21,8 +21,8 @@ This creates:
 After running, verify and update `.gitignore`:
 
 ```gitignore
-# Ralph docs state (local only)
-ralph-docs.json
+# Sprout docs state (local only)
+sprout-docs.json
 
 # Jekyll
 docs/_site
@@ -41,7 +41,7 @@ Then enable GitHub Pages in Settings > Pages > Source: "GitHub Actions"
 
 When generating docs for a fork to PR upstream:
 
-1. Run `/ralph-write-docs` on your fork
+1. Run `/sprout-docs --output jekyll` on your fork
 2. **CRITICAL**: Search and replace your username with upstream owner:
    ```bash
    grep -r "YOUR_USERNAME" docs/

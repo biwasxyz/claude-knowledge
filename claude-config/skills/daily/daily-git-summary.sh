@@ -87,8 +87,11 @@ while IFS= read -r gitdir; do
   repo=$(dirname "$gitdir")
   repo_name=$(echo "$repo" | sed "s|$HOME/dev/||")
 
-  # Get commits for the date
-  commits=$(cd "$repo" && git log --oneline --since="$DATE 00:00:00" --until="$DATE 23:59:59" 2>/dev/null)
+  # Get author email from repo's git config
+  author_email=$(cd "$repo" && git config user.email 2>/dev/null)
+
+  # Get commits for the date, filtered by author
+  commits=$(cd "$repo" && git log --oneline --author="$author_email" --since="$DATE 00:00:00" --until="$DATE 23:59:59" 2>/dev/null)
 
   if [ -n "$commits" ]; then
     count=$(echo "$commits" | wc -l)
@@ -147,6 +150,106 @@ if command -v gh &> /dev/null; then
     --jq '.[] | "- " + .repository.nameWithOwner + "#" + (.number|tostring) + ": " + .title' 2>/dev/null)
   if [ -n "$prs_merged" ]; then
     echo "$prs_merged"
+  else
+    echo "None"
+  fi
+  echo ""
+
+  # === Activity from Events API ===
+  echo "=== Activity from Events API ==="
+  echo ""
+
+  # Get all events and filter by date
+  # Events API returns ISO timestamps, we filter for the target date
+  # Note: @me doesn't work for events API, need to get username
+  GH_USER=$(gh api /user --jq '.login' 2>/dev/null)
+  EVENTS=$(gh api "/users/${GH_USER}/events" --paginate 2>/dev/null)
+
+  # PR Reviews
+  echo "### PR Reviews"
+  pr_reviews=$(echo "$EVENTS" | jq -r --arg date "$DATE" '
+    .[] | select(.type == "PullRequestReviewEvent") |
+    select(.created_at | startswith($date)) |
+    "- " + .repo.name + "#" + (.payload.pull_request.number|tostring) + ": " + .payload.review.state + " - " + .payload.pull_request.title
+  ' 2>/dev/null)
+  if [ -n "$pr_reviews" ]; then
+    echo "$pr_reviews"
+  else
+    echo "None"
+  fi
+  echo ""
+
+  # Issue Comments
+  echo "### Issue Comments"
+  issue_comments=$(echo "$EVENTS" | jq -r --arg date "$DATE" '
+    .[] | select(.type == "IssueCommentEvent") |
+    select(.created_at | startswith($date)) |
+    "- " + .repo.name + "#" + (.payload.issue.number|tostring) + ": " + (.payload.comment.body | split("\n")[0] | if length > 60 then .[0:60] + "..." else . end)
+  ' 2>/dev/null)
+  if [ -n "$issue_comments" ]; then
+    echo "$issue_comments"
+  else
+    echo "None"
+  fi
+  echo ""
+
+  # PR Comments (review comments)
+  echo "### PR Comments"
+  pr_comments=$(echo "$EVENTS" | jq -r --arg date "$DATE" '
+    .[] | select(.type == "PullRequestReviewCommentEvent") |
+    select(.created_at | startswith($date)) |
+    "- " + .repo.name + "#" + (.payload.pull_request.number|tostring) + ": " + (.payload.comment.body | split("\n")[0] | if length > 60 then .[0:60] + "..." else . end)
+  ' 2>/dev/null)
+  if [ -n "$pr_comments" ]; then
+    echo "$pr_comments"
+  else
+    echo "None"
+  fi
+  echo ""
+
+  # Repos forked today
+  echo "### Repos Forked"
+  repos_forked=$(echo "$EVENTS" | jq -r --arg date "$DATE" '
+    .[] | select(.type == "ForkEvent") |
+    select(.created_at | startswith($date)) |
+    "- " + .repo.name + " -> " + .payload.forkee.full_name
+  ' 2>/dev/null)
+  if [ -n "$repos_forked" ]; then
+    echo "$repos_forked"
+  else
+    echo "None"
+  fi
+  echo ""
+
+  # Branches/tags created
+  echo "### Branches/Tags Created"
+  refs_created=$(echo "$EVENTS" | jq -r --arg date "$DATE" '
+    .[] | select(.type == "CreateEvent") |
+    select(.created_at | startswith($date)) |
+    "- " + .repo.name + ": " + .payload.ref_type + " " + (.payload.ref // "(default branch)")
+  ' 2>/dev/null)
+  if [ -n "$refs_created" ]; then
+    echo "$refs_created"
+  else
+    echo "None"
+  fi
+  echo ""
+
+  # Push events to repos NOT in ~/dev (external contributions)
+  echo "### External Pushes (repos not in ~/dev)"
+  LOCAL_REPOS=$(find "$DEV_DIR" -type d -name ".git" 2>/dev/null | sed 's|/.git$||' | sed "s|$DEV_DIR/||" | sort)
+  external_pushes=$(echo "$EVENTS" | jq -r --arg date "$DATE" '
+    .[] | select(.type == "PushEvent") |
+    select(.created_at | startswith($date)) |
+    .repo.name
+  ' 2>/dev/null | sort -u | while read repo; do
+    # Check if repo exists locally
+    if ! echo "$LOCAL_REPOS" | grep -q "^${repo}$"; then
+      echo "- $repo"
+    fi
+  done)
+  if [ -n "$external_pushes" ]; then
+    echo "$external_pushes"
   else
     echo "None"
   fi

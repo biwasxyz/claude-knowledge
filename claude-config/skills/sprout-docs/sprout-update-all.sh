@@ -1,8 +1,8 @@
 #!/bin/bash
-# Ralph Update All - Batch documentation updater
-# Scans for repos with ralph-docs.json and runs /ralph-write-docs on each
+# Sprout Update All - Batch documentation updater
+# Scans for repos with sprout-docs.json and runs /sprout-docs on each
 #
-# Usage: ralph-update-all.sh [target_dir]
+# Usage: sprout-update-all.sh [target_dir]
 #
 # Arguments:
 #   target_dir    Root directory to scan (default: ~/dev)
@@ -10,18 +10,18 @@
 # Expected directory structure:
 #   ~/dev/
 #   ├── org1/
-#   │   ├── repo-a/           # Has ralph-docs.json -> will update
-#   │   └── repo-b/           # No ralph-docs.json -> skipped
+#   │   ├── repo-a/           # Has sprout-docs.json -> will update
+#   │   └── repo-b/           # No sprout-docs.json -> skipped
 #   ├── org2/
-#   │   └── repo-c/           # Has ralph-docs.json -> will update
-#   └── personal-project/     # Has ralph-docs.json -> will update
+#   │   └── repo-c/           # Has sprout-docs.json -> will update
+#   └── personal-project/     # Has sprout-docs.json -> will update
 #
 # Opt-in mechanism:
-#   Only repos containing ralph-docs.json are processed.
-#   Run /ralph-write-docs manually once to initialize a repo.
+#   Only repos containing sprout-docs.json are processed.
+#   Run /sprout-docs manually once to initialize a repo.
 #
 # Cost control:
-#   - Only processes opted-in repos (those with ralph-docs.json)
+#   - Only processes opted-in repos (those with sprout-docs.json)
 #   - Skips repos where docs are already up to date
 #   - Use --dry-run to preview without making changes
 
@@ -31,7 +31,7 @@ set -euo pipefail
 TARGET_DIR="${1:-$HOME/dev}"
 LOG_DIR="${HOME}/logs"
 TIMESTAMP=$(date +%Y-%m-%dT%H-%M-%S)
-LOG_FILE="${LOG_DIR}/${TIMESTAMP}-ralph-update-all.json"
+LOG_FILE="${LOG_DIR}/${TIMESTAMP}-sprout-update-all.json"
 DRY_RUN="${DRY_RUN:-false}"
 START_TIME=$(date -Iseconds)
 
@@ -72,7 +72,7 @@ add_result() {
 # Ensure log directory exists
 mkdir -p "$LOG_DIR"
 
-log_info "=== Ralph Update All ==="
+log_info "=== Sprout Update All ==="
 log_info "Target: $TARGET_DIR"
 log_info "Log: $LOG_FILE"
 log_info "Started: $START_TIME"
@@ -84,18 +84,18 @@ if [ ! -d "$TARGET_DIR" ]; then
     exit 1
 fi
 
-# Find all ralph-docs.json files (opted-in repos)
-log_info "Scanning for ralph-docs.json files..."
-RALPH_CONFIGS=$(find "$TARGET_DIR" -name "ralph-docs.json" -type f 2>/dev/null | sort)
+# Find all sprout-docs.json files (opted-in repos)
+log_info "Scanning for sprout-docs.json files..."
+SPROUT_CONFIGS=$(find "$TARGET_DIR" -name "sprout-docs.json" -type f 2>/dev/null | sort)
 
-if [ -z "$RALPH_CONFIGS" ]; then
-    log_warn "No ralph-docs.json files found in $TARGET_DIR"
-    log_info "Run /ralph-write-docs manually in a repo to initialize it."
+if [ -z "$SPROUT_CONFIGS" ]; then
+    log_warn "No sprout-docs.json files found in $TARGET_DIR"
+    log_info "Run /sprout-docs manually in a repo to initialize it."
     exit 0
 fi
 
 # Count repos
-TOTAL=$(echo "$RALPH_CONFIGS" | wc -l)
+TOTAL=$(echo "$SPROUT_CONFIGS" | wc -l)
 log_info "Found $TOTAL opted-in repos"
 echo ""
 
@@ -105,7 +105,7 @@ SKIPPED=0
 FAILED=0
 
 # Process each repo
-for config in $RALPH_CONFIGS; do
+for config in $SPROUT_CONFIGS; do
     REPO_DIR=$(dirname "$config")
     REPO_NAME=$(echo "$REPO_DIR" | sed "s|$TARGET_DIR/||")
 
@@ -126,11 +126,11 @@ for config in $RALPH_CONFIGS; do
         continue
     fi
 
-    # Run claude with ralph-write-docs skill
+    # Run claude with sprout-docs skill
     cd "$REPO_DIR"
 
     # Capture output and exit code
-    if output=$(claude -p "Run /ralph-write-docs to update documentation" \
+    if output=$(claude -p "Run /sprout-docs to update documentation" \
         --allowedTools "Bash,Read,Write,Edit,Glob,Grep" \
         --output-format json 2>&1); then
 

@@ -1,6 +1,6 @@
 # README Template Reference
 
-This template defines the structure that `ralph-write-docs` generates and validates against.
+This template defines the structure that `sprout-docs` generates and validates against.
 
 ## Standard Template
 

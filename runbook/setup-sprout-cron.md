@@ -1,11 +1,11 @@
-# Setup Ralph Documentation Cron Job
+# Setup Sprout Documentation Cron Job
 
-Automate documentation updates across all your repositories using ralph-update-all.sh with cron.
+Automate documentation updates across all your repositories using sprout-update-all.sh with cron.
 
 ## Prerequisites
 
 - Claude Code CLI installed and authenticated
-- Repositories initialized with `/ralph-write-docs` (creates `ralph-docs.json`)
+- Repositories initialized with `/sprout-docs` (creates `sprout-docs.json`)
 - `jq` installed for JSON parsing: `sudo apt install jq`
 
 ## Quick Setup
@@ -15,8 +15,8 @@ Automate documentation updates across all your repositories using ralph-update-a
 Add the script to your PATH for easy access:
 
 ```bash
-ln -s ~/dev/whoabuddy/claude-knowledge/claude-config/skills/ralph-write-docs/ralph-update-all.sh \
-      ~/.local/bin/ralph-update-all
+ln -s ~/.claude/skills/sprout-docs/sprout-update-all.sh \
+      ~/.local/bin/sprout-update-all
 ```
 
 ### 2. Test the Script
@@ -24,13 +24,13 @@ ln -s ~/dev/whoabuddy/claude-knowledge/claude-config/skills/ralph-write-docs/ral
 Run a dry run first to see which repos would be updated:
 
 ```bash
-DRY_RUN=true ralph-update-all ~/dev
+DRY_RUN=true sprout-update-all ~/dev
 ```
 
 Run for real:
 
 ```bash
-ralph-update-all ~/dev
+sprout-update-all ~/dev
 ```
 
 ### 3. Add to Crontab
@@ -45,27 +45,27 @@ Add one of these schedules:
 
 ```cron
 # Daily at 2 AM
-0 2 * * * /home/whoabuddy/dev/whoabuddy/claude-knowledge/claude-config/skills/ralph-write-docs/ralph-update-all.sh ~/dev
+0 2 * * * ~/.claude/skills/sprout-docs/sprout-update-all.sh ~/dev
 
 # Weekly on Sunday at 3 AM
-0 3 * * 0 /home/whoabuddy/dev/whoabuddy/claude-knowledge/claude-config/skills/ralph-write-docs/ralph-update-all.sh ~/dev
+0 3 * * 0 ~/.claude/skills/sprout-docs/sprout-update-all.sh ~/dev
 
 # Monthly on the 1st at 4 AM
-0 4 1 * * /home/whoabuddy/dev/whoabuddy/claude-knowledge/claude-config/skills/ralph-write-docs/ralph-update-all.sh ~/dev
+0 4 1 * * ~/.claude/skills/sprout-docs/sprout-update-all.sh ~/dev
 ```
 
 ### 4. Verify Cron Entry
 
 ```bash
-crontab -l | grep ralph
+crontab -l | grep sprout
 ```
 
 ## How It Works
 
-1. **Scans** `target_dir` (default: `~/dev`) for `ralph-docs.json` files
+1. **Scans** `target_dir` (default: `~/dev`) for `sprout-docs.json` files
 2. **Filters** to only opted-in repositories (those with the config file)
-3. **Runs** Claude Code with `/ralph-write-docs` skill on each repo
-4. **Logs** results to `~/.local/log/ralph/update-TIMESTAMP.log`
+3. **Runs** Claude Code with `/sprout-docs` skill on each repo
+4. **Logs** results to `~/logs/TIMESTAMP-sprout-update-all.json`
 
 ### Opting In a Repository
 
@@ -74,24 +74,24 @@ To include a repo in automated updates, run the skill once manually:
 ```bash
 cd ~/dev/org/my-repo
 claude
-> /ralph-write-docs
+> /sprout-docs
 ```
 
-This creates `ralph-docs.json` which marks the repo as opted-in.
+This creates `sprout-docs.json` which marks the repo as opted-in.
 
 ### Opting Out
 
 Remove the config file to exclude a repo:
 
 ```bash
-rm ~/dev/org/my-repo/ralph-docs.json
+rm ~/dev/org/my-repo/sprout-docs.json
 ```
 
 ## Cost Control
 
 The script is designed to minimize API usage:
 
-- **Opt-in only**: Skips repos without `ralph-docs.json`
+- **Opt-in only**: Skips repos without `sprout-docs.json`
 - **Incremental updates**: The skill uses content hashing to only update changed folders
 - **Dry run mode**: Preview which repos would be processed without API calls
 
@@ -101,19 +101,19 @@ Logs are saved to `~/logs/` as JSON files with timestamp prefixes:
 
 ```bash
 # View latest log
-ls -lt ~/logs/*ralph* | head -5
+ls -lt ~/logs/*sprout* | head -5
 
 # Pretty-print the latest log
-jq . "$(ls -t ~/logs/*-ralph-update-all.json | head -1)"
+jq . "$(ls -t ~/logs/*-sprout-update-all.json | head -1)"
 
 # Check summary of latest run
-jq '.summary' "$(ls -t ~/logs/*-ralph-update-all.json | head -1)"
+jq '.summary' "$(ls -t ~/logs/*-sprout-update-all.json | head -1)"
 
 # List failed repos
-jq '.repos[] | select(.status == "failed")' ~/logs/2026-01-07T02-00-00-ralph-update-all.json
+jq '.repos[] | select(.status == "failed")' ~/logs/2026-01-07T02-00-00-sprout-update-all.json
 ```
 
-Log filename format: `YYYY-MM-DDTHH-MM-SS-ralph-update-all.json`
+Log filename format: `YYYY-MM-DDTHH-MM-SS-sprout-update-all.json`
 
 Log structure:
 ```json
@@ -145,7 +145,7 @@ Cron has a minimal environment. Ensure Claude is in the PATH:
 ```cron
 PATH=/home/whoabuddy/.local/bin:/usr/local/bin:/usr/bin:/bin
 
-0 2 * * * /path/to/ralph-update-all.sh ~/dev
+0 2 * * * /path/to/sprout-update-all.sh ~/dev
 ```
 
 Or use full path to claude:
@@ -166,13 +166,13 @@ claude --auth
 
 ### No Repos Found
 
-Verify repos have `ralph-docs.json`:
+Verify repos have `sprout-docs.json`:
 
 ```bash
-find ~/dev -name "ralph-docs.json" -type f
+find ~/dev -name "sprout-docs.json" -type f
 ```
 
-If empty, initialize repos manually with `/ralph-write-docs`.
+If empty, initialize repos manually with `/sprout-docs`.
 
 ## Advanced Usage
 
@@ -180,17 +180,17 @@ If empty, initialize repos manually with `/ralph-write-docs`.
 
 ```bash
 # Update only a specific org's repos
-ralph-update-all ~/dev/my-org
+sprout-update-all ~/dev/my-org
 
 # Update a different dev folder
-ralph-update-all ~/projects
+sprout-update-all ~/projects
 ```
 
 ### Environment Variables
 
 ```bash
 # Dry run (no changes)
-DRY_RUN=true ralph-update-all ~/dev
+DRY_RUN=true sprout-update-all ~/dev
 ```
 
 ### Manual Log Rotation
@@ -198,13 +198,13 @@ DRY_RUN=true ralph-update-all ~/dev
 Logs accumulate over time. Clean up old logs:
 
 ```bash
-# Remove ralph logs older than 30 days
-find ~/logs -name "*-ralph-update-all.json" -mtime +30 -delete
+# Remove sprout logs older than 30 days
+find ~/logs -name "*-sprout-update-all.json" -mtime +30 -delete
 ```
 
 Or add to cron:
 
 ```cron
-# Clean old ralph logs weekly
-0 0 * * 0 find ~/logs -name "*-ralph-update-all.json" -mtime +30 -delete
+# Clean old sprout logs weekly
+0 0 * * 0 find ~/logs -name "*-sprout-update-all.json" -mtime +30 -delete
 ```
