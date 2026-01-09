@@ -1,33 +1,68 @@
 # Claude Knowledge Base
 
-A shared knowledge repository for AI-assisted development workflows. Clone this repo and run `/setup` to configure your personal Claude Code environment.
+A shared knowledge repository for AI-assisted development workflows.
 
-## Quick Start
+## First-Time Setup
+
+If you're reading this in Claude Code and the user wants to set up their environment, follow these steps:
+
+### 1. Detect this repo's location
+
+Find where this repo was cloned by checking the path of this README file. Store as `$KNOWLEDGE_BASE`.
+
+### 2. Set up agents and commands (symlink)
+
+These are shared and auto-update when the user pulls the repo:
 
 ```bash
-# Clone the repo
-git clone https://github.com/whoabuddy/claude-knowledge ~/dev/<your-org>/claude-knowledge
-
-# Symlink agents and commands (shared)
-ln -sf ~/dev/<your-org>/claude-knowledge/claude-config/agents ~/.claude/agents
-ln -sf ~/dev/<your-org>/claude-knowledge/claude-config/commands ~/.claude/commands
-
-# Copy skills (so you can add personal skills)
-cp -r ~/dev/<your-org>/claude-knowledge/claude-config/skills ~/.claude/skills
-
-# Restart Claude Code, then run setup
-/setup
+ln -sf $KNOWLEDGE_BASE/claude-config/agents ~/.claude/agents
+ln -sf $KNOWLEDGE_BASE/claude-config/commands ~/.claude/commands
 ```
+
+### 3. Set up skills (copy if not exists)
+
+Skills are copied so users can add personal skills without affecting the team repo:
+
+```bash
+# Only copy if ~/.claude/skills doesn't exist
+if [ ! -d ~/.claude/skills ]; then
+  cp -r $KNOWLEDGE_BASE/claude-config/skills ~/.claude/skills
+fi
+```
+
+### 4. Generate personal CLAUDE.md
+
+Read the shared `CLAUDE.md` in this repo and generate a personalized version at `~/.claude/CLAUDE.md`:
+
+- Replace `<your-org>` with the user's org/username from the repo path
+- Update paths to point to this knowledge base location
+- Ask the user if they have local repos to add to "Local Resources"
+
+### 5. Report completion
+
+```
+SETUP COMPLETE
+├── Knowledge base: $KNOWLEDGE_BASE
+├── Agents: symlinked
+├── Commands: symlinked
+├── Skills: copied
+├── CLAUDE.md: generated
+└── Action: restart Claude Code to load new config
+```
+
+After restart, `/setup` and other skills will be available.
+
+---
 
 ## Structure
 
 ```
 claude-knowledge/
-├── CLAUDE.md           # Shared config reference (use /sync to personalize)
+├── CLAUDE.md           # Shared config reference
 ├── claude-config/      # Shared Claude Code configuration
 │   ├── agents/         # Custom agent definitions
 │   ├── commands/       # Slash commands
-│   └── skills/         # Skills (daily, sprout-docs, sync)
+│   └── skills/         # Skills (daily, setup, sprout-docs)
 ├── context/            # Reference docs (APIs, specs, standards)
 ├── decisions/          # Architecture Decision Records
 ├── nuggets/            # Quick facts by topic
@@ -35,38 +70,41 @@ claude-knowledge/
 └── runbook/            # Operational procedures
 ```
 
-## How It Works
+## After Setup
 
-1. **Agents & commands** are symlinked to `claude-config/` (shared, auto-update on git pull)
-2. **Skills** are copied to `~/.claude/skills/` (allows adding personal skills)
-3. **Personal CLAUDE.md** is generated from the shared reference
-4. **Knowledge** is organized by type and referenced from CLAUDE.md
-
-## Key Skills
-
-| Skill | Purpose |
-|-------|---------|
-| `/setup` | Set up and update personal config from shared reference |
+| Command | Purpose |
+|---------|---------|
+| `/setup` | Check status, update CLAUDE.md, sync new skills |
 | `/daily` | Generate daily work summary across all repos |
 | `/sprout-docs` | Generate folder-scoped documentation |
 | `/learn` | Capture knowledge nuggets during sessions |
-| `/sync` | Sync dev environment (git pull, check status, dependencies) |
+| `/sync` | Sync dev environment (git pull, dependencies) |
 
-## Contributing
+## Adding Personal Skills
+
+Create skills directly in `~/.claude/skills/`:
+
+```bash
+mkdir ~/.claude/skills/my-skill
+# Add SKILL.md with your skill definition
+```
+
+To share a skill with the team, copy it to `$KNOWLEDGE_BASE/claude-config/skills/` and commit.
+
+## Contributing Knowledge
 
 When you learn something useful:
 1. Use `/learn topic: what you learned` to capture it
 2. The nugget goes to `nuggets/<topic>.md`
-3. If it's important enough, add to shared `CLAUDE.md`
+3. If it's important, add to shared `CLAUDE.md`
 4. Commit and push so the team benefits
 
-## Team Members
+## What's Shared vs Personal
 
-Each team member has their own:
-- `~/.claude/CLAUDE.md` (personal paths, preferences)
-- Local repo clones in `~/dev/`
-
-But shares:
-- Agents, commands, skills (via symlinks)
-- Quick facts and standards (via /sync)
-- Knowledge base content (via git)
+| Item | Location | Shared? |
+|------|----------|---------|
+| Agents | Symlinked | Yes (auto-updates) |
+| Commands | Symlinked | Yes (auto-updates) |
+| Skills | Copied | Team skills copied, can add personal |
+| CLAUDE.md | Generated | Personal paths, shared standards |
+| Knowledge | This repo | Yes (via git) |

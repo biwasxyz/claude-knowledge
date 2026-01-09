@@ -1,21 +1,8 @@
 # Claude Code Knowledge Base
 
-This file documents shared team standards for Claude Code configuration. Use the `/setup` skill to generate your personal `~/.claude/CLAUDE.md` from this reference.
+This is the shared reference for team standards. See `README.md` for first-time setup instructions.
 
-## Getting Started
-
-1. Clone this repo: `git clone https://github.com/whoabuddy/claude-knowledge ~/dev/<your-org>/claude-knowledge`
-2. Set up shared config (one-time):
-   ```bash
-   # Symlink agents and commands (shared)
-   ln -sf ~/dev/<your-org>/claude-knowledge/claude-config/agents ~/.claude/agents
-   ln -sf ~/dev/<your-org>/claude-knowledge/claude-config/commands ~/.claude/commands
-
-   # Copy skills (so you can add personal skills)
-   cp -r ~/dev/<your-org>/claude-knowledge/claude-config/skills ~/.claude/skills
-   ```
-3. Restart Claude Code to load the new config
-4. Run `/setup` to generate your personal CLAUDE.md
+Your personal `~/.claude/CLAUDE.md` is generated from this file. Run `/setup update` to sync changes.
 
 ## Knowledge Base Structure
 
