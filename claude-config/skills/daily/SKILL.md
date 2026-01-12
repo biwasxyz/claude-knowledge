@@ -23,4 +23,15 @@ Follow the runbook: `~/dev/whoabuddy/claude-knowledge/runbook/daily-summary.md`
 | File | Purpose |
 |------|---------|
 | `daily-git-summary.sh` | Bash helper for raw data collection |
+| `extract-deployments.ts` | Bun script to extract deployment URLs from wrangler.jsonc |
 | `TEMPLATE.md` | Summary format template |
+
+## Deployment URLs
+
+For repos with Cloudflare Workers (wrangler.jsonc), extract deployment links:
+
+```bash
+bun ~/.claude/skills/daily/extract-deployments.ts --from-repos org/repo1,org/repo2
+```
+
+This outputs a markdown table with staging/production URLs extracted from wrangler.jsonc routes.

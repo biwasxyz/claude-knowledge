@@ -8,6 +8,14 @@
 |:-------:|:-----:|:------:|:---:|:-------:|:--------:|
 | {N} | {N} | {N} | {N} | {N} | {N} |
 
+## Deployments
+
+{Only include for repos with wrangler.jsonc. Run: bun extract-deployments.ts --from-repos repo1,repo2}
+
+| Project | Staging | Production |
+|---------|---------|------------|
+| {name} | [{domain}](https://{domain}) | [{domain}](https://{domain}) |
+
 ## Highlights
 
 {2-4 sentences on main themes and accomplishments. Focus on what moved forward, not just what was touched.}
