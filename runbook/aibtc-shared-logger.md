@@ -1,6 +1,6 @@
-# Cloudflare Shared Logger Setup
+# AIBTC Shared Logger Setup
 
-This runbook covers setting up a Cloudflare Worker application to use the shared `worker-logs` service instead of Cloudflare Worker Observability.
+This runbook covers setting up a Cloudflare Worker application to use the AIBTC `worker-logs` service for centralized logging.
 
 ## Overview
 
@@ -11,8 +11,8 @@ The `worker-logs` service provides centralized logging for all Cloudflare Worker
 - Health monitoring capabilities
 - Both RPC (service binding) and HTTP REST API access
 
-**Service Location**: https://logs.wbd.host
-**Source Code**: `~/dev/whoabuddy/worker-logs`
+**Service Location**: https://logs.aibtc.dev
+**Source Code**: `~/dev/aibtcdev/worker-logs`
 
 ## Prerequisites
 
@@ -25,7 +25,7 @@ The `worker-logs` service provides centralized logging for all Cloudflare Worker
 Before sending logs, register your app with worker-logs to get an app ID and API key.
 
 ```bash
-curl -X POST https://logs.wbd.host/apps \
+curl -X POST https://logs.aibtc.dev/apps \
   -H "Content-Type: application/json" \
   -d '{"app_id": "my-worker", "name": "My Worker App"}'
 ```
@@ -219,12 +219,12 @@ Check that logs are being recorded:
 
 ```bash
 # Via HTTP API
-curl "https://logs.wbd.host/logs?limit=10" \
+curl "https://logs.aibtc.dev/logs?limit=10" \
   -H "X-App-ID: my-worker" \
   -H "X-Api-Key: YOUR_API_KEY"
 
 # Check stats
-curl "https://logs.wbd.host/stats/my-worker?days=1"
+curl "https://logs.aibtc.dev/stats/my-worker?days=1"
 ```
 
 ## Alternative: HTTP API Integration
@@ -244,7 +244,7 @@ npx wrangler secret put LOGS_API_KEY
 
 ```typescript
 // src/http-logger.ts
-const LOGS_URL = 'https://logs.wbd.host'
+const LOGS_URL = 'https://logs.aibtc.dev'
 const APP_ID = 'my-worker'
 
 export function createHttpLogger(apiKey: string, requestId?: string) {
@@ -301,12 +301,12 @@ const stats = await env.LOGS.getStats('my-worker', 7)
 
 ```bash
 # Query with filters
-curl "https://logs.wbd.host/logs?level=ERROR&limit=50&since=2024-01-01T00:00:00Z" \
+curl "https://logs.aibtc.dev/logs?level=ERROR&limit=50&since=2024-01-01T00:00:00Z" \
   -H "X-App-ID: my-worker" \
   -H "X-Api-Key: YOUR_API_KEY"
 
 # Get daily stats
-curl "https://logs.wbd.host/stats/my-worker?days=7"
+curl "https://logs.aibtc.dev/stats/my-worker?days=7"
 ```
 
 ### Query Parameters
@@ -325,7 +325,7 @@ curl "https://logs.wbd.host/stats/my-worker?days=7"
 Register URLs for automatic health checks (runs every 5 minutes):
 
 ```bash
-curl -X POST "https://logs.wbd.host/apps/my-worker/health-urls" \
+curl -X POST "https://logs.aibtc.dev/apps/my-worker/health-urls" \
   -H "Content-Type: application/json" \
   -d '{"urls": ["https://my-worker.example.com/health"]}'
 ```
@@ -333,7 +333,7 @@ curl -X POST "https://logs.wbd.host/apps/my-worker/health-urls" \
 View health check history:
 
 ```bash
-curl "https://logs.wbd.host/health/my-worker"
+curl "https://logs.aibtc.dev/health/my-worker"
 ```
 
 ## Maintenance
@@ -343,7 +343,7 @@ curl "https://logs.wbd.host/health/my-worker"
 Delete logs before a specific timestamp:
 
 ```bash
-curl -X POST "https://logs.wbd.host/apps/my-worker/prune" \
+curl -X POST "https://logs.aibtc.dev/apps/my-worker/prune" \
   -H "Content-Type: application/json" \
   -d '{"before": "2024-01-01T00:00:00Z"}'
 ```
@@ -353,7 +353,7 @@ curl -X POST "https://logs.wbd.host/apps/my-worker/prune" \
 If your API key is compromised:
 
 ```bash
-curl -X POST "https://logs.wbd.host/apps/my-worker/regenerate-key"
+curl -X POST "https://logs.aibtc.dev/apps/my-worker/regenerate-key"
 ```
 
 ## Troubleshooting
@@ -362,7 +362,7 @@ curl -X POST "https://logs.wbd.host/apps/my-worker/regenerate-key"
 
 Ensure you registered the app first:
 ```bash
-curl -X POST https://logs.wbd.host/apps \
+curl -X POST https://logs.aibtc.dev/apps \
   -d '{"app_id": "my-worker", "name": "My Worker"}'
 ```
 
@@ -400,5 +400,5 @@ Check that both headers are present and correct:
 
 ## Related Documentation
 
-- Full integration guide: `~/dev/whoabuddy/worker-logs/docs/integration.md`
-- Architecture details: `~/dev/whoabuddy/worker-logs/docs/PLAN.md`
+- Full integration guide: `~/dev/aibtcdev/worker-logs/docs/integration.md`
+- Architecture details: `~/dev/aibtcdev/worker-logs/docs/PLAN.md`
