@@ -47,7 +47,7 @@ grep -rE "(api[_-]?key|token|secret|password|credential)" claude-config/
 ## Update Workflow
 
 ```bash
-cd ~/dev/whoabuddy/claude-knowledge
+cd ~/dev/$USER/claude-knowledge  # or your knowledge base path
 
 # 1. Check what changed
 git status
@@ -75,8 +75,7 @@ git push
 | `runbook/` | Procedures | Public |
 | `decisions/` | ADRs | Public |
 | `nuggets/` | Quick facts | Public - review for personal info |
-| `notes/` | Personal notes | Review before sharing |
-| `logs/` | Session logs | Don't commit - use ~/logs/ instead |
+| `downloads/` | API specs, downloaded refs | Public - no secrets |
 
 ## Common Placeholders
 

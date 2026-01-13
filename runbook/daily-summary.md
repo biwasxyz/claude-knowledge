@@ -4,13 +4,14 @@ Generate and publish daily work summaries across all git repositories.
 
 ## Overview
 
-This workflow produces a team-friendly summary of commits, issues, and PRs, then publishes it to the claude-logs blog.
+This workflow produces a team-friendly summary of commits, issues, and PRs, then publishes it to a Jekyll blog hosted on GitHub Pages.
 
 ## Prerequisites
 
 - GitHub CLI (`gh`) authenticated
-- Access to `~/dev/` repositories
-- Push access to `whoabuddy/claude-logs`
+- Access to `~/dev/` repositories (organized as `org/repo-name`)
+- A GitHub repo for publishing summaries (e.g., `yourorg/dev-logs`)
+- Set `DAILY_LOGS_REPO` environment variable or note your logs repo path
 
 ## Workflow Steps
 
@@ -42,12 +43,13 @@ Summary sections:
 | GitHub Activity | Issues and PRs in table format |
 | Notes | Optional blockers or follow-ups |
 
-### 3. Sync to claude-logs
+### 3. Sync to Logs Repo
 
-Copy the formatted summary to the blog:
+Copy the formatted summary to your blog repo:
 
 ```bash
-cp ~/logs/YYYY-MM-DD-daily-summary.md ~/dev/whoabuddy/claude-logs/_posts/
+# Replace with your logs repo path
+cp ~/logs/YYYY-MM-DD-daily-summary.md ~/dev/$DAILY_LOGS_REPO/_posts/
 ```
 
 Add Jekyll front matter if creating new post:
@@ -63,7 +65,7 @@ tags: [commits, github]
 ### 4. Commit and Push
 
 ```bash
-cd ~/dev/whoabuddy/claude-logs
+cd ~/dev/$DAILY_LOGS_REPO
 git add _posts/YYYY-MM-DD-daily-summary.md
 git commit -m "docs: add daily summary for YYYY-MM-DD"
 git push
@@ -86,7 +88,7 @@ GitHub Pages builds automatically on push.
 | `~/.claude/skills/daily/TEMPLATE.md` | Summary format template |
 | `~/logs/*-daily-github-summary.md` | Raw script outputs |
 | `~/logs/YYYY-MM-DD-daily-summary.md` | Formatted summaries |
-| `~/dev/whoabuddy/claude-logs/_posts/` | Published blog posts |
+| `~/dev/$DAILY_LOGS_REPO/_posts/` | Published blog posts |
 
 ## Troubleshooting
 

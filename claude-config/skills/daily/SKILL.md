@@ -9,13 +9,19 @@ Generates and publishes a team-friendly daily summary of work across all git rep
 /daily 2026-01-05  # Specific date
 ```
 
+## Configuration
+
+Set these in your environment or `~/.claude/CLAUDE.md`:
+- `DAILY_LOGS_REPO` - GitHub repo for publishing summaries (e.g., `myorg/dev-logs`)
+- Default dev directory: `~/dev/` (all `org/repo` subdirectories are scanned)
+
 ## Workflow
 
-Follow the runbook: `~/dev/whoabuddy/claude-knowledge/runbook/daily-summary.md`
+Follow the runbook: `runbook/daily-summary.md` in your knowledge base.
 
 1. **Collect** - Run `daily-git-summary.sh` to gather raw data
 2. **Interpret** - Create/update team summary using TEMPLATE.md
-3. **Sync** - Copy to `~/dev/whoabuddy/claude-logs/_posts/`
+3. **Sync** - Copy to your configured logs repo `_posts/` directory
 4. **Push** - Commit and push to trigger GitHub Pages build
 
 ## Files

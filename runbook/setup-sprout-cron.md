@@ -120,7 +120,7 @@ Log structure:
 {
   "startTime": "2026-01-07T02:00:00-07:00",
   "endTime": "2026-01-07T02:05:30-07:00",
-  "targetDir": "/home/whoabuddy/dev",
+  "targetDir": "/home/youruser/dev",
   "dryRun": false,
   "summary": {
     "total": 3,
@@ -143,7 +143,7 @@ Log structure:
 Cron has a minimal environment. Ensure Claude is in the PATH:
 
 ```cron
-PATH=/home/whoabuddy/.local/bin:/usr/local/bin:/usr/bin:/bin
+PATH=$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin
 
 0 2 * * * /path/to/sprout-update-all.sh ~/dev
 ```
@@ -153,7 +153,7 @@ Or use full path to claude:
 ```bash
 # Find claude location
 which claude
-# e.g., /home/whoabuddy/.local/bin/claude
+# e.g., ~/.local/bin/claude or /usr/local/bin/claude
 ```
 
 ### Authentication Issues

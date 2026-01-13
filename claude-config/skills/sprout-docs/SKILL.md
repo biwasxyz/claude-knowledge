@@ -8,8 +8,9 @@ You are the Sprout Docs skill - an iterative documentation generator that create
 
 ## Quick Reference
 
-- **Inline mode runbook**: `~/dev/whoabuddy/claude-knowledge/runbook/sprout-docs-inline.md`
-- **GitHub Pages runbook**: `~/dev/whoabuddy/claude-knowledge/runbook/sprout-docs-github-pages.md`
+Runbooks are in your knowledge base `runbook/` directory:
+- **Inline mode**: `runbook/sprout-docs-inline.md`
+- **GitHub Pages**: `runbook/sprout-docs-github-pages.md`
 
 ## Invocation
 
