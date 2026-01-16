@@ -4,7 +4,7 @@ Configure Claude Code to use a shared knowledge base with team standards, agents
 
 ## Overview
 
-This procedure sets up your `~/.claude/` directory to use shared configuration from a cloned knowledge base repo. Agents are symlinked (auto-update on git pull), skills are copied (allows personal additions).
+This procedure sets up your `~/.claude/` directory to use shared configuration from a cloned knowledge base repo. Both agents and skills are symlinked (auto-update on git pull).
 
 ## Prerequisites
 
@@ -30,19 +30,11 @@ Store the path as `$KNOWLEDGE_BASE` for remaining steps.
 
 ### 2. Set Up Shared Config
 
-**Symlink agents** (shared, auto-update on pull):
+**Symlink agents and skills** (auto-update on pull):
 
 ```bash
 ln -sf $KNOWLEDGE_BASE/claude-config/agents ~/.claude/agents
-```
-
-**Copy skills** (allows adding personal skills without affecting team repo):
-
-```bash
-# Only if ~/.claude/skills doesn't exist
-if [ ! -d ~/.claude/skills ]; then
-  cp -r $KNOWLEDGE_BASE/claude-config/skills ~/.claude/skills
-fi
+ln -sf $KNOWLEDGE_BASE/claude-config/skills ~/.claude/skills
 ```
 
 ### 3. Generate Personal CLAUDE.md
@@ -65,7 +57,7 @@ Read the shared `CLAUDE.md` from the knowledge base and generate a personalized 
 SETUP COMPLETE
 ├── Knowledge base: ~/dev/<org>/claude-knowledge
 ├── Agents: symlinked ✓
-├── Skills: copied ✓ (add personal skills here)
+├── Skills: symlinked ✓
 ├── CLAUDE.md: generated ✓
 └── Next: restart Claude Code to load config
 ```
@@ -121,20 +113,21 @@ To sync changes from the knowledge base:
 
 | Item | Method | Why |
 |------|--------|-----|
-| Agents | Symlink | Rarely need personal agents |
-| Skills | Copy | Allows adding personal skills |
+| Agents | Symlink | Auto-updates on git pull |
+| Skills | Symlink | Auto-updates on git pull |
 | CLAUDE.md | Generate | Paths differ per user |
 
 ## Adding Personal Skills
 
-After setup, create personal skills directly in `~/.claude/skills/`:
+Add skills directly to the knowledge base repo:
 
 ```bash
-mkdir ~/.claude/skills/my-skill
+mkdir $KNOWLEDGE_BASE/claude-config/skills/my-skill
 # Add SKILL.md with your skill definition
+git add -A && git commit -m "feat: add my-skill"
 ```
 
-Personal skills won't affect the team repo. To share a skill with the team, copy it to the knowledge base and commit.
+Skills are available immediately since the directory is symlinked.
 
 ## Troubleshooting
 

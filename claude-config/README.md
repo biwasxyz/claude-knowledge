@@ -17,18 +17,16 @@ This folder contains:
 git clone https://github.com/whoabuddy/claude-knowledge.git ~/dev/$USER/claude-knowledge
 ```
 
-### 2. Create Symlinks and Copy Skills
+### 2. Create Symlinks
 
 ```bash
 # Backup existing directories if needed
 mv ~/.claude/skills ~/.claude/skills.bak
 mv ~/.claude/agents ~/.claude/agents.bak
 
-# Symlink agents (auto-updates on git pull)
+# Symlink both (auto-updates on git pull)
 ln -s ~/dev/$USER/claude-knowledge/claude-config/agents ~/.claude/agents
-
-# Copy skills (allows personal additions)
-cp -r ~/dev/$USER/claude-knowledge/claude-config/skills ~/.claude/skills
+ln -s ~/dev/$USER/claude-knowledge/claude-config/skills ~/.claude/skills
 ```
 
 ### 3. Configure CLAUDE.md
@@ -114,13 +112,12 @@ System prompt for the agent.
 
 ## Keeping in Sync
 
-Agents are symlinked, so they auto-update on `git pull`. Skills are copied, so pull new skills manually or use `/setup update`.
+Both agents and skills are symlinked, so they auto-update on `git pull`.
 
 ```bash
 cd ~/dev/$USER/claude-knowledge
 git pull
-# New agents are automatically available
-# Use /setup update to sync new skills
+# New agents and skills are automatically available
 ```
 
 ## Directory Structure
@@ -129,7 +126,7 @@ git pull
 claude-knowledge/
 ├── claude-config/       # This folder
 │   ├── agents/          # Symlinked to ~/.claude/agents
-│   ├── skills/          # Copied to ~/.claude/skills
+│   ├── skills/          # Symlinked to ~/.claude/skills
 │   └── CLAUDE.md.example
 ├── context/             # API references, specs
 ├── decisions/           # Architecture Decision Records
