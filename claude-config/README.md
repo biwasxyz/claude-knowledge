@@ -56,9 +56,13 @@ export CLAUDE_KNOWLEDGE_PATH="$HOME/dev/$USER/claude-knowledge"
 
 | Skill | Description |
 |-------|-------------|
+| `/check-code-complete` | Verify no TODOs, stubs, or dead code before merge |
+| `/check-docs` | Verify README.md, CLAUDE.md, and docs are complete |
+| `/check-production-ready` | Full production readiness check (build, tests, security) |
 | `/daily [date]` | Generate daily work summary from all git repos |
 | `/setup` | Set up or update Claude Code configuration |
 | `/sprout-docs` | Generate folder documentation for codebase exploration |
+| `/update-after-merge` | Clean up after PR merge (switch branch, delete, pull) |
 
 ## Agents
 
