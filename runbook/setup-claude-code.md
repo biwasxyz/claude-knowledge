@@ -9,21 +9,32 @@ This procedure sets up your `~/.claude/` directory to use shared configuration f
 ## Prerequisites
 
 - Claude Code CLI installed
-- Knowledge base repo cloned (e.g., `~/dev/yourorg/claude-knowledge`)
+- GitHub CLI (`gh`) installed and authenticated
 
 ## Procedure
 
-### 1. Detect Knowledge Base Location
+### 1. Fork and Clone Knowledge Base
 
-Search for the knowledge base repo:
+Check if knowledge base exists:
 
 ```bash
 find ~/dev -maxdepth 3 -name "claude-knowledge" -type d 2>/dev/null
 ```
 
-If not found, clone it:
+If not found, fork and clone:
+
 ```bash
-git clone https://github.com/yourorg/claude-knowledge.git ~/dev/yourorg/claude-knowledge
+cd ~/dev/$USER
+gh repo fork whoabuddy/claude-knowledge --clone=true
+# Sets up origin (your fork) and upstream (whoabuddy/claude-knowledge)
+```
+
+Or manually:
+```bash
+# Fork on GitHub first, then:
+git clone https://github.com/$USER/claude-knowledge.git ~/dev/$USER/claude-knowledge
+cd ~/dev/$USER/claude-knowledge
+git remote add upstream https://github.com/whoabuddy/claude-knowledge.git
 ```
 
 Store the path as `$KNOWLEDGE_BASE` for remaining steps.
@@ -86,7 +97,19 @@ Report:
 
 ## Update Procedure
 
-To sync changes from the knowledge base:
+To sync changes from the upstream knowledge base:
+
+### Pull Upstream Updates
+
+```bash
+cd $KNOWLEDGE_BASE
+git fetch upstream
+git merge upstream/main
+# Resolve conflicts if your changes overlap with upstream
+git push origin main
+```
+
+Your personal skills (committed to your fork) are preserved. New upstream skills merge in cleanly since they're in different files.
 
 ### Update CLAUDE.md
 
@@ -102,13 +125,6 @@ To sync changes from the knowledge base:
    - External APIs
 5. Show diff and confirm before applying
 
-### Sync New Skills
-
-1. Compare `$KNOWLEDGE_BASE/claude-config/skills/` with `~/.claude/skills/`
-2. List new skills available in knowledge base
-3. Offer to copy new skills (won't overwrite existing)
-4. User can decline to keep their setup as-is
-
 ## Personal vs Shared
 
 | Item | Method | Why |
@@ -119,15 +135,18 @@ To sync changes from the knowledge base:
 
 ## Adding Personal Skills
 
-Add skills directly to the knowledge base repo:
+Add skills directly to your fork:
 
 ```bash
 mkdir $KNOWLEDGE_BASE/claude-config/skills/my-skill
 # Add SKILL.md with your skill definition
 git add -A && git commit -m "feat: add my-skill"
+git push origin main
 ```
 
 Skills are available immediately since the directory is symlinked.
+
+To share with everyone, open a PR from your fork to `whoabuddy/claude-knowledge`.
 
 ## Troubleshooting
 

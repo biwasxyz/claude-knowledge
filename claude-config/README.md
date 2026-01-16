@@ -11,10 +11,30 @@ This folder contains:
 
 ## Setup
 
-### 1. Clone the Repository
+### 1. Fork and Clone
+
+Fork the repository on GitHub, then clone your fork:
 
 ```bash
-git clone https://github.com/whoabuddy/claude-knowledge.git ~/dev/$USER/claude-knowledge
+gh repo fork whoabuddy/claude-knowledge --clone=true
+# This clones to ./claude-knowledge and sets up upstream remote
+
+# Move to standard location
+mv claude-knowledge ~/dev/$USER/claude-knowledge
+cd ~/dev/$USER/claude-knowledge
+
+# Verify remotes
+git remote -v
+# origin    -> your fork
+# upstream  -> whoabuddy/claude-knowledge
+```
+
+Or manually:
+```bash
+# Fork on GitHub first, then:
+git clone https://github.com/$USER/claude-knowledge.git ~/dev/$USER/claude-knowledge
+cd ~/dev/$USER/claude-knowledge
+git remote add upstream https://github.com/whoabuddy/claude-knowledge.git
 ```
 
 ### 2. Create Symlinks
@@ -112,13 +132,27 @@ System prompt for the agent.
 
 ## Keeping in Sync
 
-Both agents and skills are symlinked, so they auto-update on `git pull`.
+### Pull Updates from Upstream
+
+Get new skills and updates from the main repo without losing your personal additions:
 
 ```bash
 cd ~/dev/$USER/claude-knowledge
-git pull
-# New agents and skills are automatically available
+git fetch upstream
+git merge upstream/main
+# Resolve any conflicts if your changes overlap with upstream
+git push origin main
 ```
+
+Your personal skills (committed to your fork) are preserved. New upstream skills merge in cleanly since they're in different files.
+
+### Contributing Back
+
+To share a skill with everyone:
+
+1. Create the skill in your fork
+2. Push to your fork: `git push origin main`
+3. Open a PR from your fork to `whoabuddy/claude-knowledge`
 
 ## Directory Structure
 
