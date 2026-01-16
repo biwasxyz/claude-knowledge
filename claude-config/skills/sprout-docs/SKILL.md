@@ -1,16 +1,14 @@
 ---
 name: sprout-docs
-description: Generate folder-scoped documentation using iterative loop
+description: Generate folder-scoped README documentation for codebase exploration
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Task, TodoWrite
 ---
 
-You are the Sprout Docs skill - an iterative documentation generator that creates clean, navigable documentation for every folder in a repository. Supports both inline READMEs and GitHub Pages publishing.
+You are the Sprout Docs skill - an iterative documentation generator that creates navigable README.md files for every folder in a repository. Useful for exploring unfamiliar codebases.
 
 ## Quick Reference
 
-Runbooks are in your knowledge base `runbook/` directory:
-- **Inline mode**: `runbook/sprout-docs-inline.md`
-- **GitHub Pages**: `runbook/sprout-docs-github-pages.md`
+Runbook: `runbook/sprout-docs-inline.md` in your knowledge base.
 
 ## Invocation
 
@@ -18,18 +16,10 @@ Runbooks are in your knowledge base `runbook/` directory:
 /sprout-docs [path] [options]
 
 Options:
-  --output <mode>   Output mode: "inline" (default) or "jekyll"
   --depth <n>       Max folder depth (default: unlimited)
   --skip <pattern>  Additional folders to skip (comma-separated)
   --dry-run         Show what would be created without writing
 ```
-
-## Output Modes
-
-| Mode | Output Location | Use Case |
-|------|-----------------|----------|
-| `inline` | `README.md` in each folder | Simple navigation, no publishing |
-| `jekyll` | `docs/` folder with just-the-docs | GitHub Pages publishing |
 
 ## Core Process
 
@@ -38,12 +28,10 @@ Options:
    - Update run: Compare hashes, find changed folders
 
 2. **Discover** - Find all folders to document
-   - Skip: node_modules, .git, dist, build, coverage, __pycache__, docs/
+   - Skip: node_modules, .git, dist, build, coverage, __pycache__
    - Calculate content hash via `git rev-parse HEAD:path`
 
-3. **Generate** - Create documentation for each folder
-   - Inline: `README.md` in folder with breadcrumb navigation
-   - Jekyll: `docs/path.md` with front matter for just-the-docs
+3. **Generate** - Create `README.md` in each folder with breadcrumb navigation
 
 4. **Commit** - Batch commits on current branch
    - Format: `docs(sprout): document folder1, folder2, folder3`
@@ -53,7 +41,7 @@ Options:
    <promise>DOCUMENTATION COMPLETE</promise>
    ```
 
-## State File Format (v3)
+## State File Format
 
 `sprout-docs.json` (gitignored):
 ```json
@@ -61,13 +49,6 @@ Options:
   "version": 3,
   "lastRun": "2026-01-07T00:00:00Z",
   "baseBranch": "main",
-  "output": "inline",
-  "theme": {
-    "primary": "#2563EB",
-    "accent": "#10B981",
-    "colorScheme": "dark",
-    "source": "tailwind.config.ts"
-  },
   "folders": {
     "src": {
       "contentHash": "a1b2c3d4e5f6789...",
@@ -83,23 +64,7 @@ Options:
 }
 ```
 
-### Field Definitions
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `version` | integer | Schema version (current: 3) |
-| `lastRun` | ISO timestamp | Last iteration completion |
-| `baseBranch` | string | Target branch for commits |
-| `output` | `"inline"` \| `"jekyll"` | Output mode |
-| `theme` | object | Only for jekyll mode - just-the-docs colors |
-| `folders[].contentHash` | string | Full 40-char git SHA |
-| `folders[].documented` | boolean | Has docs been generated? |
-| `folders[].docsPath` | string | Path to generated docs file |
-| `stats.totalFolders` | integer | Total folders to document |
-| `stats.documented` | integer | Completed count |
-| `stats.lastFullRun` | timestamp | When all folders last processed |
-
-## Inline README Template
+## README Template
 
 ```markdown
 [← parent](../README.md) · **folder-name**
@@ -114,38 +79,6 @@ Options:
 |------|---------|
 | [`file.ts`](./file.ts) | Brief description |
 | [`subfolder/`](./subfolder/) | Brief description |
-
-## Relationships
-
-- **Consumed by**: who uses this
-- **Depends on**: what this needs
-
----
-*Updated: YYYY-MM-DD*
-```
-
-## Jekyll Page Template
-
-```markdown
----
-title: folder-name
-layout: default
-parent: parent-folder
-nav_order: 1
----
-
-[← parent](./parent.md) | **folder-name**
-
-# folder-name
-
-> One-line purpose: why this folder exists.
-
-## Contents
-
-| Item | Purpose |
-|------|---------|
-| [`file.ts`](../src/folder/file.ts) | Brief description |
-| [`subfolder/`](./folder/subfolder.md) | Brief description |
 
 ## Relationships
 
@@ -183,7 +116,6 @@ Queued:
 
 - `node_modules/`, `.git/`, `dist/`, `build/`, `out/`
 - `coverage/`, `.claude/`, `__pycache__/`
-- `docs/` (jekyll output folder)
 - Empty directories
 - Anything in `.gitignore`
 
@@ -193,12 +125,4 @@ Add to `.gitignore` on first run:
 ```gitignore
 # Sprout docs state (local only)
 sprout-docs.json
-
-# Jekyll (if using jekyll mode)
-docs/_site
-docs/.sass-cache
-docs/.jekyll-cache
-docs/.jekyll-metadata
-docs/Gemfile.lock
-docs/vendor
 ```
