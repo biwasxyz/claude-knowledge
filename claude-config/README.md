@@ -5,9 +5,8 @@ Shareable Claude Code configuration files. These work together with the [claude-
 ## Overview
 
 This folder contains:
-- `commands/` - Slash commands (`/daily`, `/learn`, `/plan`, etc.)
-- `skills/` - Supporting scripts and skill definitions
 - `agents/` - Specialized agent configurations
+- `skills/` - Skills with supporting scripts
 - `CLAUDE.md.example` - Template for global instructions
 
 ## Setup
@@ -18,20 +17,18 @@ This folder contains:
 git clone https://github.com/whoabuddy/claude-knowledge.git ~/dev/$USER/claude-knowledge
 ```
 
-### 2. Create Symlinks
-
-Symlink these directories to your `~/.claude/` folder:
+### 2. Create Symlinks and Copy Skills
 
 ```bash
 # Backup existing directories if needed
-mv ~/.claude/commands ~/.claude/commands.bak
 mv ~/.claude/skills ~/.claude/skills.bak
 mv ~/.claude/agents ~/.claude/agents.bak
 
-# Create symlinks
-ln -s ~/dev/$USER/claude-knowledge/claude-config/commands ~/.claude/commands
-ln -s ~/dev/$USER/claude-knowledge/claude-config/skills ~/.claude/skills
+# Symlink agents (auto-updates on git pull)
 ln -s ~/dev/$USER/claude-knowledge/claude-config/agents ~/.claude/agents
+
+# Copy skills (allows personal additions)
+cp -r ~/dev/$USER/claude-knowledge/claude-config/skills ~/.claude/skills
 ```
 
 ### 3. Configure CLAUDE.md
@@ -49,26 +46,19 @@ Edit `~/.claude/CLAUDE.md` to set your paths:
 
 ### 4. Set Knowledge Base Path
 
-The agents and commands reference `$CLAUDE_KNOWLEDGE_PATH`. You can either:
+The agents reference `$CLAUDE_KNOWLEDGE_PATH`. Add to your shell profile (`~/.bashrc` or `~/.zshrc`):
 
-**Option A:** Add to your shell profile (`~/.bashrc` or `~/.zshrc`):
 ```bash
 export CLAUDE_KNOWLEDGE_PATH="$HOME/dev/$USER/claude-knowledge"
 ```
 
-**Option B:** Update paths directly in the agent/command files after symlinking.
+## Skills
 
-## Key Commands
-
-| Command | Description |
-|---------|-------------|
+| Skill | Description |
+|-------|-------------|
 | `/daily [date]` | Generate daily work summary from all git repos |
-| `/learn <category>: <fact>` | Capture knowledge nuggets during sessions |
-| `/plan <task>` | Create implementation plans |
-| `/gather <topic>` | Search knowledge base for context |
-| `/build` | Run build pipeline for current project |
-| `/pr` | Create pull requests |
-| `/status` | Check git/CI status |
+| `/setup` | Set up or update Claude Code configuration |
+| `/sprout-docs` | Generate folder documentation for codebase exploration |
 
 ## Agents
 
@@ -82,19 +72,27 @@ export CLAUDE_KNOWLEDGE_PATH="$HOME/dev/$USER/claude-knowledge"
 
 ## Customization
 
-### Adding Your Own Commands
+### Adding Your Own Skills
 
-Create a new file in `commands/`:
+Create a new directory in `~/.claude/skills/`:
+
+```bash
+mkdir ~/.claude/skills/my-skill
+```
+
+Add a `SKILL.md` file:
 
 ```markdown
 ---
-description: What the command does
+name: my-skill
+description: What the skill does
 allowed-tools: Bash, Read, Write
-argument-hint: [optional args]
 ---
 
-Command instructions here. Use $ARGUMENTS for user input.
+Skill instructions here.
 ```
+
+To share with the team, copy to the knowledge base and commit.
 
 ### Adding Your Own Agents
 
@@ -112,29 +110,28 @@ System prompt for the agent.
 
 ## Keeping in Sync
 
-With symlinks, any edits to commands/skills/agents are automatically tracked in this repo. Just commit and push when you make changes:
+Agents are symlinked, so they auto-update on `git pull`. Skills are copied, so pull new skills manually or use `/setup update`.
 
 ```bash
 cd ~/dev/$USER/claude-knowledge
-git add claude-config/
-git commit -m "Update Claude Code configuration"
-git push
+git pull
+# New agents are automatically available
+# Use /setup update to sync new skills
 ```
 
 ## Directory Structure
 
 ```
 claude-knowledge/
-├── claude-config/       # This folder - symlinked to ~/.claude/
-│   ├── agents/
-│   ├── commands/
-│   ├── skills/
+├── claude-config/       # This folder
+│   ├── agents/          # Symlinked to ~/.claude/agents
+│   ├── skills/          # Copied to ~/.claude/skills
 │   └── CLAUDE.md.example
-├── context/             # Project background, API references
+├── context/             # API references, specs
 ├── decisions/           # Architecture Decision Records
 ├── nuggets/             # Quick facts by category
 ├── patterns/            # Code patterns and solutions
 └── runbook/             # Operational procedures
 ```
 
-The knowledge base structure is designed to work with the agents and commands - they reference paths like `$CLAUDE_KNOWLEDGE_PATH/patterns/` and `$CLAUDE_KNOWLEDGE_PATH/nuggets/`.
+The knowledge base structure is designed to work with the agents - they reference paths like `$CLAUDE_KNOWLEDGE_PATH/patterns/` and `$CLAUDE_KNOWLEDGE_PATH/runbook/`.

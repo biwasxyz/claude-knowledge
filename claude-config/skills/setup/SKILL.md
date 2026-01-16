@@ -11,7 +11,7 @@ Set up and maintain your Claude Code configuration from the team knowledge base.
 
 ## Overview
 
-- **First run**: Detects knowledge base, symlinks agents/commands, copies skills, generates CLAUDE.md
+- **First run**: Detects knowledge base, symlinks agents, copies skills, generates CLAUDE.md
 - **Status check**: Shows current config status and available updates
 - **Update**: Syncs shared sections of CLAUDE.md, offers to copy new skills
 
@@ -24,7 +24,6 @@ Runbook: `runbook/setup-claude-code.md` in your knowledge base.
 | Item | Method | Why |
 |------|--------|-----|
 | Agents | Symlink | Auto-updates on git pull |
-| Commands | Symlink | Auto-updates on git pull |
 | Skills | Copy | Allows personal additions |
 | CLAUDE.md | Generate | Paths differ per user |
 

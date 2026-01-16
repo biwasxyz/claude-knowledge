@@ -21,7 +21,6 @@ grep -r "/home/whoabuddy" claude-config/
 
 Review these files for project-specific references that should be generalized:
 - `claude-config/skills/daily/daily-git-summary.sh` - No hardcoded repo names
-- `claude-config/commands/*.md` - No specific project references
 - `claude-config/agents/*.md` - Local resources should be generic or have GitHub links
 
 ### 3. Verify CLAUDE.md.example is Updated
@@ -69,7 +68,7 @@ git push
 
 | Directory | Content | Sharing |
 |-----------|---------|---------|
-| `claude-config/` | Commands, skills, agents | Public - sanitize paths |
+| `claude-config/` | Skills, agents | Public - sanitize paths |
 | `context/` | API docs, references | Public - no secrets |
 | `patterns/` | Code patterns | Public |
 | `runbook/` | Procedures | Public |

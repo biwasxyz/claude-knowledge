@@ -1,10 +1,10 @@
 # Setup Claude Code from Knowledge Base
 
-Configure Claude Code to use a shared knowledge base with team standards, agents, commands, and skills.
+Configure Claude Code to use a shared knowledge base with team standards, agents, and skills.
 
 ## Overview
 
-This procedure sets up your `~/.claude/` directory to use shared configuration from a cloned knowledge base repo. Agents and commands are symlinked (auto-update on git pull), skills are copied (allows personal additions).
+This procedure sets up your `~/.claude/` directory to use shared configuration from a cloned knowledge base repo. Agents are symlinked (auto-update on git pull), skills are copied (allows personal additions).
 
 ## Prerequisites
 
@@ -30,11 +30,10 @@ Store the path as `$KNOWLEDGE_BASE` for remaining steps.
 
 ### 2. Set Up Shared Config
 
-**Symlink agents and commands** (shared, auto-update on pull):
+**Symlink agents** (shared, auto-update on pull):
 
 ```bash
 ln -sf $KNOWLEDGE_BASE/claude-config/agents ~/.claude/agents
-ln -sf $KNOWLEDGE_BASE/claude-config/commands ~/.claude/commands
 ```
 
 **Copy skills** (allows adding personal skills without affecting team repo):
@@ -66,7 +65,6 @@ Read the shared `CLAUDE.md` from the knowledge base and generate a personalized 
 SETUP COMPLETE
 ├── Knowledge base: ~/dev/<org>/claude-knowledge
 ├── Agents: symlinked ✓
-├── Commands: symlinked ✓
 ├── Skills: copied ✓ (add personal skills here)
 ├── CLAUDE.md: generated ✓
 └── Next: restart Claude Code to load config
@@ -78,7 +76,7 @@ If already configured, verify current status:
 
 ```bash
 # Check symlinks
-ls -la ~/.claude/agents ~/.claude/commands
+ls -la ~/.claude/agents
 
 # Check skills directory
 ls ~/.claude/skills/
@@ -89,7 +87,7 @@ ls -la ~/.claude/CLAUDE.md
 
 Report:
 - Knowledge base location
-- Symlink status (agents, commands)
+- Symlink status (agents)
 - Skills directory (copied vs symlinked)
 - CLAUDE.md last modified
 - New skills available in knowledge base (if any)
@@ -124,7 +122,6 @@ To sync changes from the knowledge base:
 | Item | Method | Why |
 |------|--------|-----|
 | Agents | Symlink | Rarely need personal agents |
-| Commands | Symlink | Shared team commands |
 | Skills | Copy | Allows adding personal skills |
 | CLAUDE.md | Generate | Paths differ per user |
 

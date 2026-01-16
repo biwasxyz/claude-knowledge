@@ -10,13 +10,12 @@ If you're reading this in Claude Code and the user wants to set up their environ
 
 Find where this repo was cloned by checking the path of this README file. Store as `$KNOWLEDGE_BASE`.
 
-### 2. Set up agents and commands (symlink)
+### 2. Set up agents (symlink)
 
 These are shared and auto-update when the user pulls the repo:
 
 ```bash
 ln -sf $KNOWLEDGE_BASE/claude-config/agents ~/.claude/agents
-ln -sf $KNOWLEDGE_BASE/claude-config/commands ~/.claude/commands
 ```
 
 ### 3. Set up skills (copy if not exists)
@@ -44,7 +43,6 @@ Read the shared `CLAUDE.md` in this repo and generate a personalized version at 
 SETUP COMPLETE
 ├── Knowledge base: $KNOWLEDGE_BASE
 ├── Agents: symlinked
-├── Commands: symlinked
 ├── Skills: copied
 ├── CLAUDE.md: generated
 └── Action: restart Claude Code to load new config
@@ -61,7 +59,6 @@ claude-knowledge/
 ├── CLAUDE.md           # Shared config reference
 ├── claude-config/      # Shared Claude Code configuration
 │   ├── agents/         # Custom agent definitions
-│   ├── commands/       # Slash commands
 │   └── skills/         # Skills (daily, setup, sprout-docs)
 ├── context/            # Reference docs (APIs, specs, standards)
 ├── decisions/          # Architecture Decision Records
@@ -72,13 +69,11 @@ claude-knowledge/
 
 ## After Setup
 
-| Command | Purpose |
-|---------|---------|
+| Skill | Purpose |
+|-------|---------|
 | `/setup` | Check status, update CLAUDE.md, sync new skills |
 | `/daily` | Generate daily work summary across all repos |
 | `/sprout-docs` | Generate folder-scoped documentation |
-| `/learn` | Capture knowledge nuggets during sessions |
-| `/sync` | Sync dev environment (git pull, dependencies) |
 
 ## Adding Personal Skills
 
@@ -94,17 +89,15 @@ To share a skill with the team, copy it to `$KNOWLEDGE_BASE/claude-config/skills
 ## Contributing Knowledge
 
 When you learn something useful:
-1. Use `/learn topic: what you learned` to capture it
-2. The nugget goes to `nuggets/<topic>.md`
-3. If it's important, add to shared `CLAUDE.md`
-4. Commit and push so the team benefits
+1. Add to the appropriate `nuggets/<topic>.md` file
+2. If it's important, add to shared `CLAUDE.md`
+3. Commit and push so the team benefits
 
 ## What's Shared vs Personal
 
 | Item | Location | Shared? |
 |------|----------|---------|
 | Agents | Symlinked | Yes (auto-updates) |
-| Commands | Symlinked | Yes (auto-updates) |
 | Skills | Copied | Team skills copied, can add personal |
 | CLAUDE.md | Generated | Personal paths, shared standards |
 | Knowledge | This repo | Yes (via git) |

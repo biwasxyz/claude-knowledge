@@ -15,7 +15,7 @@ All persistent knowledge lives in the knowledge base repo:
 | `nuggets/` | Quick facts by topic (learned during sessions) |
 | `patterns/` | Code patterns and gotchas |
 | `runbook/` | Operational procedures (how to do things) |
-| `claude-config/` | Shared agents, commands, and skills |
+| `claude-config/` | Shared agents and skills |
 
 ## Quick Facts
 
