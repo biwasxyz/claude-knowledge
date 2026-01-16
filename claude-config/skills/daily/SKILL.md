@@ -1,3 +1,9 @@
+---
+name: daily
+description: Generate daily summary of git activity across all repositories
+allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Task, TodoWrite
+---
+
 # Daily Summary Skill
 
 Generates and publishes a team-friendly daily summary of work across all git repositories.

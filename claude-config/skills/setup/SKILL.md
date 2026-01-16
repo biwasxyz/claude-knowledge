@@ -1,3 +1,9 @@
+---
+name: setup
+description: Configure Claude Code with symlinks to knowledge base agents and skills
+allowed-tools: Bash, Read, Write, Edit, Glob, Grep
+---
+
 # Setup Skill
 
 Set up and maintain your Claude Code configuration from the team knowledge base.
