@@ -2,55 +2,26 @@
 
 A shared knowledge repository for AI-assisted development workflows.
 
-## First-Time Setup
+## Quick Start
 
-If you're reading this in Claude Code and the user wants to set up their environment, follow these steps:
-
-### 1. Detect this repo's location
-
-Find where this repo was cloned by checking the path of this README file. Store as `$KNOWLEDGE_BASE`.
-
-### 2. Set up agents (symlink)
-
-These are shared and auto-update when the user pulls the repo:
+Fork and clone this repo, then symlink to your `~/.claude/` directory:
 
 ```bash
-ln -sf $KNOWLEDGE_BASE/claude-config/agents ~/.claude/agents
+# Fork and clone (sets up upstream remote automatically)
+gh repo fork whoabuddy/claude-knowledge --clone=true
+mv claude-knowledge ~/dev/$USER/claude-knowledge
+cd ~/dev/$USER/claude-knowledge
+
+# Symlink agents and skills
+ln -sf $(pwd)/claude-config/agents ~/.claude/agents
+ln -sf $(pwd)/claude-config/skills ~/.claude/skills
+
+# Copy and customize CLAUDE.md
+cp CLAUDE.md ~/.claude/CLAUDE.md
+# Edit paths in ~/.claude/CLAUDE.md to match your setup
 ```
 
-### 3. Set up skills (copy if not exists)
-
-Skills are copied so users can add personal skills without affecting the team repo:
-
-```bash
-# Only copy if ~/.claude/skills doesn't exist
-if [ ! -d ~/.claude/skills ]; then
-  cp -r $KNOWLEDGE_BASE/claude-config/skills ~/.claude/skills
-fi
-```
-
-### 4. Generate personal CLAUDE.md
-
-Read the shared `CLAUDE.md` in this repo and generate a personalized version at `~/.claude/CLAUDE.md`:
-
-- Replace `<your-org>` with the user's org/username from the repo path
-- Update paths to point to this knowledge base location
-- Ask the user if they have local repos to add to "Local Resources"
-
-### 5. Report completion
-
-```
-SETUP COMPLETE
-├── Knowledge base: $KNOWLEDGE_BASE
-├── Agents: symlinked
-├── Skills: copied
-├── CLAUDE.md: generated
-└── Action: restart Claude Code to load new config
-```
-
-After restart, `/setup` and other skills will be available.
-
----
+Restart Claude Code to load the new configuration.
 
 ## Structure
 
@@ -59,7 +30,7 @@ claude-knowledge/
 ├── CLAUDE.md           # Shared config reference
 ├── claude-config/      # Shared Claude Code configuration
 │   ├── agents/         # Custom agent definitions
-│   └── skills/         # Skills (daily, setup, sprout-docs)
+│   └── skills/         # Skills (symlinked to ~/.claude/skills)
 ├── context/            # Reference docs (APIs, specs, standards)
 ├── decisions/          # Architecture Decision Records
 ├── nuggets/            # Quick facts by topic
@@ -67,37 +38,56 @@ claude-knowledge/
 └── runbook/            # Operational procedures
 ```
 
-## After Setup
+## Skills
 
 | Skill | Purpose |
 |-------|---------|
-| `/setup` | Check status, update CLAUDE.md, sync new skills |
-| `/daily` | Generate daily work summary across all repos |
+| `/check-code-complete` | Verify no TODOs, stubs, or dead code |
+| `/check-docs` | Verify README.md, CLAUDE.md, and docs |
+| `/check-production-ready` | Full production readiness check |
+| `/daily` | Generate daily work summary across repos |
+| `/setup` | Check status, update CLAUDE.md |
 | `/sprout-docs` | Generate folder-scoped documentation |
+| `/update-after-merge` | Clean up after PR merge |
+
+## Keeping in Sync
+
+Pull updates from upstream without losing your personal additions:
+
+```bash
+cd ~/dev/$USER/claude-knowledge
+git fetch upstream
+git merge upstream/main
+git push origin main
+```
+
+Your personal skills (committed to your fork) are preserved.
 
 ## Adding Personal Skills
 
-Create skills directly in `~/.claude/skills/`:
+Add skills directly to your fork:
 
 ```bash
-mkdir ~/.claude/skills/my-skill
+mkdir claude-config/skills/my-skill
 # Add SKILL.md with your skill definition
+git add -A && git commit -m "feat: add my-skill"
+git push origin main
 ```
 
-To share a skill with the team, copy it to `$KNOWLEDGE_BASE/claude-config/skills/` and commit.
+To share with everyone, open a PR to `whoabuddy/claude-knowledge`.
 
 ## Contributing Knowledge
 
 When you learn something useful:
 1. Add to the appropriate `nuggets/<topic>.md` file
 2. If it's important, add to shared `CLAUDE.md`
-3. Commit and push so the team benefits
+3. Commit and push (or PR if sharing upstream)
 
 ## What's Shared vs Personal
 
-| Item | Location | Shared? |
-|------|----------|---------|
-| Agents | Symlinked | Yes (auto-updates) |
-| Skills | Copied | Team skills copied, can add personal |
-| CLAUDE.md | Generated | Personal paths, shared standards |
-| Knowledge | This repo | Yes (via git) |
+| Item | Method | Notes |
+|------|--------|-------|
+| Agents | Symlink | Auto-updates on git pull |
+| Skills | Symlink | Auto-updates on git pull |
+| CLAUDE.md | Copy | Personal paths, shared standards |
+| Knowledge | Git | Fork workflow for personal + upstream |
