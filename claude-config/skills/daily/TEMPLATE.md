@@ -2,62 +2,60 @@
 
 > Last updated: {TIMESTAMP}
 
-## At a Glance
+## TL;DR
 
-| Commits | Repos | Issues | PRs | Reviews | Comments |
-|:-------:|:-----:|:------:|:---:|:-------:|:--------:|
-| {N} | {N} | {N} | {N} | {N} | {N} |
-
-## Deployments
-
-{Only include for repos with wrangler.jsonc. Run: bun extract-deployments.ts --from-repos repo1,repo2}
-
-| Project | Staging | Production |
-|---------|---------|------------|
-| {name} | [{domain}](https://{domain}) | [{domain}](https://{domain}) |
+{1-2 sentences summarizing the day for non-technical readers. Focus on outcomes, not activities.}
 
 ## Highlights
 
-{2-4 sentences on main themes and accomplishments. Focus on what moved forward, not just what was touched.}
+{2-4 sentences on main themes and accomplishments. What actually moved forward today? What decisions were made?}
 
 ## Commits
 
 | Repo | Commits | Focus |
 |------|:-------:|-------|
-| {org/repo} | {n} | {What changed and why} |
+| [{org/repo}](https://github.com/{org/repo}) | {n} | {What changed and why} |
 
-{If repos were added/removed from ~/dev, note here: "Added: org/repo" or "Removed: org/repo"}
+{If repos were added to ~/dev, include a table:}
 
-## GitHub Activity
+### Added Repos
 
-{Combine all GitHub activity into one table. Only include rows with actual activity.}
+| Repo | Type | Purpose |
+|------|------|---------|
+| [{org/repo}](https://github.com/{org/repo}) | {Created/Cloned/Forked} | {Why - what you're building, exploring, or referencing} |
 
-| Type | Repo | # | Description |
-|------|------|:-:|-------------|
-| Issue Created | {org/repo} | {n} | {title} |
-| Issue Closed | {org/repo} | {n} | {title} |
-| PR Opened | {org/repo} | {n} | {title} |
-| PR Merged | {org/repo} | {n} | {title} |
-| Review | {org/repo} | {n} | {approved/changes requested/commented} |
-| Comment | {org/repo} | {n} | {first line or summary} |
+## Open Threads
 
-## Other Activity
+{Track actionable items - things awaiting response, next steps, blockers. Only include if there's something to track.}
 
-{Only include if there's content. Use bullet list for misc items.}
+| Status | Item | Context |
+|--------|------|---------|
+| Awaiting review | [{org/repo}#N](url) | {what the PR does} |
+| Filed | [{org/repo}#N](url) | {what needs to happen next} |
+| Merged | [{org/repo}#N](url) | {why it matters} |
+| Blocked | {thing} | {what's blocking and next step} |
 
-- Forked: {source/repo} -> {my/repo}
-- Branch: {org/repo} `{branch-name}`
-- External: {org/repo} (pushed to repo not cloned locally)
+Status options: `Awaiting review`, `Filed`, `Merged`, `Closed`, `Blocked`, `In progress`
 
-## Notes
+## Also Today
 
-{Optional: blockers, follow-ups, decisions made, or context for tomorrow. Omit section if empty.}
+{Capture work that doesn't show in git: codebase exploration, research, architecture discussions, debugging sessions, learning. Omit if empty.}
+
+- {What you explored/researched and what you learned or decided}
+
+## Stats
+
+| Commits | Repos | PRs | Issues | Reviews |
+|:-------:|:-----:|:---:|:------:|:-------:|
+| {n} | {n} | {n} | {n} | {n} |
 
 ---
 
 Template notes (remove in actual posts):
+- TL;DR is for sharing with non-technical teammates - outcomes not activities
+- Highlights answer "what moved forward" not "what did I touch"
+- Commits table: repo links, focus on "what and why"
+- Open Threads: only actionable items, skip merged/closed unless notable
+- Also Today: research, exploration, conversations - the non-git work
+- Stats at bottom - reference data, not the headline
 - Omit any section that would be empty
-- "At a Glance" counts: Issues = created + closed, PRs = opened + merged
-- Focus column should answer "what and why" not just "what files"
-- Comments: truncate to first meaningful line
-- External pushes = contributions to repos you don't have cloned

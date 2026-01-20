@@ -35,13 +35,23 @@ Review the raw output and create/update the team summary:
 - **Template**: `~/.claude/skills/daily/TEMPLATE.md`
 
 Summary sections:
+
 | Section | Content |
 |---------|---------|
-| Highlights | 2-4 sentences on main accomplishments |
-| Repository Changes | Repos added/removed (if any) |
-| Commits | Table with repo, count, summary |
-| GitHub Activity | Issues and PRs in table format |
-| Notes | Optional blockers or follow-ups |
+| TL;DR | 1-2 sentences for non-technical readers - outcomes, not activities |
+| Highlights | 2-4 sentences on what actually moved forward |
+| Commits | Table with linked repo, count, and focus (what and why) |
+| Added Repos | Table with repo, type (Created/Cloned/Forked), and purpose |
+| Open Threads | Actionable items: PRs awaiting review, issues filed, blockers |
+| Also Today | Non-git work: exploration, research, discussions, learning |
+| Stats | Reference counts at the bottom (commits, repos, PRs, issues, reviews) |
+
+**Key principles:**
+- Lead with TL;DR for easy team sharing
+- Open Threads tracks what needs attention tomorrow
+- Also Today captures work that doesn't show in git
+- Stats at bottom - reference data, not the headline
+- Omit any section that would be empty
 
 ### 3. Sync to Logs Repo
 
