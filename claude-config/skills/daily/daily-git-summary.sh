@@ -3,14 +3,14 @@
 # Scans all git repos under ~/dev and reports commits for a given date
 # Usage: daily-git-summary.sh [YYYY-MM-DD]
 #
-# Output: Logs saved to ~/logs/YYYY-MM-DDTHH-MM-SS-daily-github-summary.md
+# Output: Logs saved to ~/logs/daily/raw/YYYY-MM-DDTHH-MM-SS-daily-github-summary.md
 # State: Tracks repos in ~/.local/state/daily-repos.txt
 
 DATE="${1:-$(date +%Y-%m-%d)}"
 DEV_DIR="${2:-$HOME/dev}"
 
 # Setup logging
-LOG_DIR="${HOME}/logs"
+LOG_DIR="${HOME}/logs/daily/raw"
 TIMESTAMP=$(date +%Y-%m-%dT%H-%M-%S)
 LOG_FILE="${LOG_DIR}/${TIMESTAMP}-daily-github-summary.md"
 mkdir -p "$LOG_DIR"

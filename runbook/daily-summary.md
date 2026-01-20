@@ -24,14 +24,14 @@ Run the bash script to gather git and GitHub activity:
 ```
 
 **Outputs:**
-- `~/logs/DATETIME-daily-github-summary.md` - Raw data (timestamped, accumulates)
+- `~/logs/daily/raw/DATETIME-daily-github-summary.md` - Raw data (timestamped, accumulates)
 - Console output with commits, issues, PRs
 
 ### 2. Interpret and Format
 
 Review the raw output and create/update the team summary:
 
-- **Location**: `~/logs/YYYY-MM-DD-daily-summary.md`
+- **Location**: `~/logs/daily/YYYY-MM-DD-daily-summary.md`
 - **Template**: `~/.claude/skills/daily/TEMPLATE.md`
 
 Summary sections:
@@ -59,7 +59,7 @@ Copy the formatted summary to your blog repo:
 
 ```bash
 # Replace with your logs repo path
-cp ~/logs/YYYY-MM-DD-daily-summary.md ~/dev/$DAILY_LOGS_REPO/_posts/
+cp ~/logs/daily/YYYY-MM-DD-daily-summary.md ~/dev/$DAILY_LOGS_REPO/_posts/
 ```
 
 Add Jekyll front matter if creating new post:
@@ -96,9 +96,22 @@ GitHub Pages builds automatically on push.
 |------|---------|
 | `~/.claude/skills/daily/daily-git-summary.sh` | Bash script for raw data collection |
 | `~/.claude/skills/daily/TEMPLATE.md` | Summary format template |
-| `~/logs/*-daily-github-summary.md` | Raw script outputs |
-| `~/logs/YYYY-MM-DD-daily-summary.md` | Formatted summaries |
+| `~/logs/daily/raw/` | Raw script outputs (timestamped) |
+| `~/logs/daily/` | Formatted summaries (one per day) |
 | `~/dev/$DAILY_LOGS_REPO/_posts/` | Published blog posts |
+
+## Logs Directory Structure
+
+```
+~/logs/
+├── daily/
+│   ├── YYYY-MM-DD-daily-summary.md    # Curated summaries
+│   └── raw/                            # Script outputs
+│       └── YYYY-MM-DDTHH-MM-SS-...md
+├── meetings/                           # Meeting agendas/notes
+├── archive/                            # Old misc files
+└── *-test-runs -> ...                  # Symlinks to repo test logs
+```
 
 ## Troubleshooting
 
