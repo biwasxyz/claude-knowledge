@@ -22,6 +22,9 @@ All persistent knowledge lives in the knowledge base repo:
 ### Deployment & Build
 
 - **Cloudflare**: Do NOT run `npm run deploy`. Use dry run to verify build, then commit and push for automatic deployment.
+- **Release Please**: Use for production repos - automates semver + changelog from conventional commits
+  - Setup: `runbook/release-please-setup.md`
+  - Requires: conventional commits, protected main branch, PR workflow
 
 ### Clarity / Stacks
 
