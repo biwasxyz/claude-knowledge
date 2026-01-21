@@ -100,18 +100,9 @@ GitHub Pages builds automatically on push.
 | `~/logs/daily/` | Formatted summaries (one per day) |
 | `~/dev/$DAILY_LOGS_REPO/_posts/` | Published blog posts |
 
-## Logs Directory Structure
+## Related
 
-```
-~/logs/
-├── daily/
-│   ├── YYYY-MM-DD-daily-summary.md    # Curated summaries
-│   └── raw/                            # Script outputs
-│       └── YYYY-MM-DDTHH-MM-SS-...md
-├── meetings/                           # Meeting agendas/notes
-├── archive/                            # Old misc files
-└── *-test-runs -> ...                  # Symlinks to repo test logs
-```
+- `runbook/logs-structure.md` - Full logs directory structure and conventions
 
 ## Troubleshooting
 

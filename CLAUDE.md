@@ -96,6 +96,19 @@ These paths vary per user. Common repos to clone:
 | `stacks-network/docs` | Stacks documentation |
 | `stx-labs/security-handbook` | Security best practices |
 
+### Logs Directory (~/logs)
+
+Central location for session logs, daily summaries, meeting notes, and project log symlinks.
+
+- `daily/` - Curated summaries + `raw/` automated outputs
+- `meetings/` - Meeting agendas and notes
+- `projects/` - Symlinks to repo log directories
+- `archive/` - Historical data
+
+**Skills:** `/daily` generates raw summaries, `/daily-brief` reads logs for orientation
+
+**Full documentation:** `runbook/logs-structure.md`
+
 ---
 
 *Generated from claude-knowledge. Run `/setup update` to sync shared sections.*
