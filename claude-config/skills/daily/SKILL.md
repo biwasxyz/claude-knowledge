@@ -61,9 +61,14 @@ Follow the runbook: `runbook/daily-summary.md` in your knowledge base.
 
 1. **Collect** - Run `daily-git-summary.sh` to gather raw git data
 2. **Read RPG** - Pull companion stats from `~/.claude-rpg/data/companions.json`
-3. **Interpret** - Create/update team summary using TEMPLATE.md
-4. **Sync** - Copy to your configured logs repo `_posts/` directory
-5. **Push** - Commit and push to trigger GitHub Pages build
+3. **Verify PR status** - Before listing PRs in Open Threads, check their actual state:
+   ```bash
+   gh pr view {number} --repo {org/repo} --json state -q '.state'
+   ```
+   Only list as "Awaiting review" if state is OPEN. Use "Merged" for MERGED PRs.
+4. **Interpret** - Create/update team summary using TEMPLATE.md (includes Jekyll front matter)
+5. **Sync** - Copy to your configured logs repo `_posts/` directory
+6. **Push** - Commit and push to trigger GitHub Pages build
 
 ## Files
 

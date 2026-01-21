@@ -1,3 +1,10 @@
+---
+title: "Daily Summary - {DATE}"
+date: {DATE}
+categories: [daily-summary]
+tags: [commits, github, {relevant-tags}]
+---
+
 # Daily Summary - {DATE}
 
 > Last updated: {TIMESTAMP}
@@ -65,10 +72,12 @@ Status options: `Awaiting review`, `Filed`, `Merged`, `Closed`, `Blocked`, `In p
 ---
 
 Template notes (remove in actual posts):
+- Jekyll front matter is REQUIRED: title, date, categories, tags
+- Tags should include repo names and key topics (e.g., x402, claude-rpg, citycoins)
 - TL;DR is for sharing with non-technical teammates - outcomes not activities
 - Highlights answer "what moved forward" not "what did I touch"
 - Commits table: repo links, focus on "what and why"
-- Open Threads: only actionable items, skip merged/closed unless notable
+- Open Threads: VERIFY PR status with `gh pr view` before listing - don't trust raw data
 - Also Today: research, exploration, conversations - the non-git work
 - Stats at bottom - reference data, not the headline
 - Companion Activity: optional, adds context when Claude sessions were active
