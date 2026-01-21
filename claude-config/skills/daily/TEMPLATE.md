@@ -49,6 +49,19 @@ Status options: `Awaiting review`, `Filed`, `Merged`, `Closed`, `Blocked`, `In p
 |:-------:|:-----:|:---:|:------:|:-------:|
 | {n} | {n} | {n} | {n} | {n} |
 
+## Companion Activity
+
+{Optional section - include when RPG data adds context to the day's work. Pull from ~/.claude-rpg/data/companions.json}
+
+| Companion | Level | XP Today | Tools | Focus |
+|-----------|:-----:|:--------:|:-----:|-------|
+| {repo-name} | {n} | +{n} | {top 2-3 tools} | {What drove the activity} |
+
+**Session Highlights:**
+- {n} prompts across {n} repos
+- Top tools: {tool1} ({n}), {tool2} ({n})
+- {Streak info if active}
+
 ---
 
 Template notes (remove in actual posts):
@@ -58,4 +71,5 @@ Template notes (remove in actual posts):
 - Open Threads: only actionable items, skip merged/closed unless notable
 - Also Today: research, exploration, conversations - the non-git work
 - Stats at bottom - reference data, not the headline
+- Companion Activity: optional, adds context when Claude sessions were active
 - Omit any section that would be empty

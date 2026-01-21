@@ -21,14 +21,49 @@ Set these in your environment or `~/.claude/CLAUDE.md`:
 - `DAILY_LOGS_REPO` - GitHub repo for publishing summaries (e.g., `myorg/dev-logs`)
 - Default dev directory: `~/dev/` (all `org/repo` subdirectories are scanned)
 
+## Data Sources
+
+### 1. Git Commits (Primary)
+Raw git log data from all repos under `~/dev/`. Collected via `daily-git-summary.sh`.
+
+### 2. Claude RPG Data (Activity Metrics)
+Session-level activity tracked by the claude-rpg system in `~/.claude-rpg/data/`:
+
+| File | Contents |
+|------|----------|
+| `companions.json` | Cumulative stats per repo: level, XP, tool usage, git ops, commands |
+| `events.jsonl` | Timestamped events: tool calls, prompts, git operations |
+
+**Companion Stats Include:**
+- Level & XP (100 × 1.5^(n-1) XP per level)
+- Tool usage counts (Read, Edit, Bash, Task, etc.)
+- Git operations (commits, pushes, PRs created/merged)
+- Commands (tests, builds, deploys, lints)
+- Blockchain ops (clarinet checks/tests, testnet/mainnet deploys)
+- Activity streaks
+
+**Extract today's events:**
+```bash
+# Filter events.jsonl by date
+grep "\"timestamp\":17" ~/.claude-rpg/data/events.jsonl | \
+  jq -s '[.[] | select(.timestamp / 1000 | strftime("%Y-%m-%d") == "2026-01-21")]'
+```
+
+**Read companion stats:**
+```bash
+jq '.companions[] | {name, level, totalExperience, "commits": .stats.git.commits}' \
+  ~/.claude-rpg/data/companions.json
+```
+
 ## Workflow
 
 Follow the runbook: `runbook/daily-summary.md` in your knowledge base.
 
-1. **Collect** - Run `daily-git-summary.sh` to gather raw data
-2. **Interpret** - Create/update team summary using TEMPLATE.md
-3. **Sync** - Copy to your configured logs repo `_posts/` directory
-4. **Push** - Commit and push to trigger GitHub Pages build
+1. **Collect** - Run `daily-git-summary.sh` to gather raw git data
+2. **Read RPG** - Pull companion stats from `~/.claude-rpg/data/companions.json`
+3. **Interpret** - Create/update team summary using TEMPLATE.md
+4. **Sync** - Copy to your configured logs repo `_posts/` directory
+5. **Push** - Commit and push to trigger GitHub Pages build
 
 ## Files
 
@@ -36,6 +71,7 @@ Follow the runbook: `runbook/daily-summary.md` in your knowledge base.
 |------|---------|
 | `daily-git-summary.sh` | Bash helper for raw data collection |
 | `extract-deployments.ts` | Bun script to extract deployment URLs from wrangler.jsonc |
+| `extract-rpg-stats.ts` | Bun script to extract daily RPG activity from claude-rpg data |
 | `TEMPLATE.md` | Summary format template |
 
 ## Deployment URLs
@@ -47,3 +83,23 @@ bun ~/.claude/skills/daily/extract-deployments.ts --from-repos org/repo1,org/rep
 ```
 
 This outputs a markdown table with staging/production URLs extracted from wrangler.jsonc routes.
+
+## RPG Stats
+
+Extract Claude session activity from the claude-rpg system:
+
+```bash
+# Today's activity
+bun ~/.claude/skills/daily/extract-rpg-stats.ts
+
+# Specific date
+bun ~/.claude/skills/daily/extract-rpg-stats.ts 2026-01-21
+
+# Companion overview (cumulative stats)
+bun ~/.claude/skills/daily/extract-rpg-stats.ts --companions
+```
+
+Outputs markdown tables showing:
+- XP earned per companion (repo)
+- Tool usage breakdown
+- Session highlights (prompts, top tools)
