@@ -1,12 +1,12 @@
 ---
 name: daily-brief
-description: Review logs from ~/logs to provide orientation and context for the day. Use when starting a work session, checking what happened recently, or needing context on recent activity. Reads daily summaries, meeting notes, test runs, and other logged data.
-allowed-tools: Bash, Read, Glob, Grep, Task
+description: Review logs from ~/logs and remote log APIs to provide orientation and context for the day. Use when starting a work session, checking what happened recently, or needing context on recent activity. Reads daily summaries, meeting notes, test runs, and worker logs.
+allowed-tools: Bash, Read, Glob, Grep, Task, WebFetch
 ---
 
 # Daily Brief Skill
 
-Reads and synthesizes logs from `~/logs` to orient you for work.
+Reads and synthesizes logs from local `~/logs` and remote log APIs to orient you for work.
 
 ## Usage
 
@@ -18,22 +18,30 @@ Reads and synthesizes logs from `~/logs` to orient you for work.
 /daily-brief 2026-01-10 2026-01-15  # Date range
 /daily-brief --deep           # More informed analysis
 /daily-brief week --deep      # Weekly retrospective
+/daily-brief --remote         # Include remote worker logs
+/daily-brief --remote-only    # Only remote logs (skip local)
 ```
 
 ## Modes
 
 ### Quick Mode (default)
-Fast direct reads for daily orientation.
+Fast direct reads for daily orientation from local logs.
 
 ### Deep Mode (`--deep`)
 Same compact output, but more informed:
 - Verify PR/issue status with `gh` before reporting
 - Cross-reference test failures against recent commits
 - Richer context from meeting notes and patterns
+- Include remote worker logs
 
 Deep mode means **better accuracy**, not more verbosity.
 
-## Logs Directory Structure
+### Remote Mode (`--remote` or `--remote-only`)
+Fetches logs from remote worker-logs APIs. Use `--remote` to combine with local logs, or `--remote-only` for just remote.
+
+## Log Sources
+
+### Local Logs (`~/logs`)
 
 ```
 ~/logs/
@@ -45,13 +53,73 @@ Deep mode means **better accuracy**, not more verbosity.
 └── stx402-test-runs/         # Symlinked test logs
 ```
 
+### Remote Log APIs
+
+Three worker-logs instances with centralized logging from Cloudflare Workers:
+
+| Service | URL | Env File |
+|---------|-----|----------|
+| wbd.host | `https://logs.wbd.host` | `~/dev/whoabuddy/worker-logs/.env` |
+| aibtc.com (prod) | `https://logs.aibtc.com` | `~/dev/aibtcdev/worker-logs/.env` |
+| aibtc.dev (staging) | `https://logs.aibtc.dev` | `~/dev/aibtcdev/worker-logs/.env` |
+
 ## Workflow
 
-1. **Parse arguments** - Date range and `--deep` flag
-2. **Read daily summaries** - Primary source (already synthesized)
-3. **Check open threads** - From logs, then verify with `gh` if `--deep`
-4. **Scan test logs** - Only flag failures not fixed by subsequent commits
-5. **Present brief** - Compact output focused on action
+1. **Parse arguments** - Date range, `--deep`, `--remote`, `--remote-only` flags
+2. **Read local daily summaries** - Primary source (already synthesized)
+3. **Fetch remote logs** - If `--remote` or `--remote-only` or `--deep`
+4. **Check open threads** - From logs, then verify with `gh` if `--deep`
+5. **Scan test logs** - Only flag failures not fixed by subsequent commits
+6. **Present brief** - Compact output focused on action
+
+### Remote Log Fetching
+
+To fetch from remote APIs, source the admin key and use curl:
+
+```bash
+# Source admin key for wbd.host
+source ~/dev/whoabuddy/worker-logs/.env
+
+# List all registered apps
+curl -s -H "X-Admin-Key: $ADMIN_API_KEY" https://logs.wbd.host/apps
+
+# Get logs for a specific app (last 24 hours)
+curl -s -H "X-Admin-Key: $ADMIN_API_KEY" \
+  "https://logs.wbd.host/logs?app_id=my-app&since=$(date -u -d '1 day ago' +%Y-%m-%dT%H:%M:%SZ)"
+
+# Get stats for an app (last 7 days)
+curl -s -H "X-Admin-Key: $ADMIN_API_KEY" \
+  "https://logs.wbd.host/stats/my-app?days=7"
+```
+
+For aibtc logs (same API, different env):
+
+```bash
+# Source admin key for aibtc (works for both prod and staging)
+source ~/dev/aibtcdev/worker-logs/.env
+
+# Production logs
+curl -s -H "X-Admin-Key: $ADMIN_API_KEY" https://logs.aibtc.com/apps
+
+# Staging logs
+curl -s -H "X-Admin-Key: $ADMIN_API_KEY" https://logs.aibtc.dev/apps
+```
+
+### API Endpoints Reference
+
+| Endpoint | Method | Auth | Description |
+|----------|--------|------|-------------|
+| `/apps` | GET | Admin | List all registered apps |
+| `/apps/:app_id` | GET | Admin | Get app details |
+| `/logs` | GET | Admin + app_id param | Query logs with filters |
+| `/stats/:app_id` | GET | Admin | Daily stats (debug/info/warn/error counts) |
+
+Query parameters for `/logs`:
+- `app_id` - Required when using admin key
+- `since` - ISO timestamp (e.g., `2026-01-20T00:00:00Z`)
+- `until` - ISO timestamp
+- `level` - Filter by level (DEBUG, INFO, WARN, ERROR)
+- `limit` - Max entries (default 100)
 
 ### Deep Mode Additions
 
@@ -59,6 +127,7 @@ When `--deep` is specified:
 - Run `gh pr list` and `gh issue list` to verify actual status
 - Cross-reference test failures against commits after the test date
 - Include meeting context if relevant to current work
+- **Automatically fetch remote logs** from all three endpoints
 
 ## Output Format
 
@@ -80,6 +149,17 @@ Keep it compact. One format for both modes (deep just means more accurate).
 |------|--------|---------|
 | [org/repo#N](url) | Awaiting review | Brief description |
 
+## Worker Activity
+| Service | Apps | Logs (24h) | Errors |
+|---------|------|------------|--------|
+| wbd.host | 3 | 1,234 | 2 |
+| aibtc.com | 5 | 8,901 | 0 |
+| aibtc.dev | 5 | 456 | 12 |
+
+**Notable Events:**
+- [app-name] 12 errors: "Connection timeout to X"
+- [app-name] Spike in activity at 14:00 UTC
+
 ## Focus Areas
 - [Priority 1 based on momentum and open work]
 - [Priority 2]
@@ -87,6 +167,8 @@ Keep it compact. One format for both modes (deep just means more accurate).
 ## Notes
 [Only if relevant meeting context or important observations]
 ```
+
+When remote logs have errors or notable patterns, surface them. Skip the Worker Activity section if all services are healthy with no errors.
 
 ## Verifying Open Threads (Deep Mode)
 
@@ -128,18 +210,26 @@ Use glob patterns like `*2026-01-19*` to find all files for a given date.
 When using Task tool for deep analysis:
 
 ```
-Analyze logs from ~/logs for [DATE RANGE]. The user makes consistent daily progress.
+Analyze logs from ~/logs and remote APIs for [DATE RANGE]. The user makes consistent daily progress.
 
 Provide a COMPACT brief with:
 1. **What Got Done** - Key accomplishments by date
 2. **Open Threads** - Only items still actually open (verify with gh if uncertain)
-3. **Focus Areas** - 2-3 suggested priorities based on momentum
+3. **Worker Activity** - Summary of remote logs (only if errors or notable patterns)
+4. **Focus Areas** - 2-3 suggested priorities based on momentum
 
 Do NOT:
 - Flag old test failures without checking for fixes in later commits
 - Report PRs/issues as open without verification
 - Duplicate information across sections
 - Be verbose - keep it scannable
+- Include Worker Activity section if all services are healthy
+
+For remote logs, focus on:
+- Error counts and patterns (especially repeated errors)
+- Unusual activity spikes
+- Health check failures
+- Any WARN/ERROR logs from the date range
 
 Logs:
 [CONTENT]
@@ -152,3 +242,12 @@ Logs:
 - Old test failures may already be fixed - check before flagging
 - Keep output scannable - busy people need quick orientation
 - `--deep` = more accurate, not more words
+
+### Remote Logs Tips
+
+- Use `--remote` sparingly - API calls add latency
+- Focus on errors and warnings, not debug/info noise
+- The env files contain `ADMIN_API_KEY` - source them before curl calls
+- All three services use the same API (worker-logs codebase)
+- wbd.host is personal projects, aibtc.com/dev are AIBTC team projects
+- Staging (aibtc.dev) may have more test noise - weight production errors higher
