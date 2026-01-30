@@ -2,6 +2,8 @@
 
 Operational procedures for Clarity smart contract development.
 
+**Prerequisites**: Clarinet installed. See `patterns/clarinet-install.md` for installation/updates.
+
 ## Project Setup
 
 ### Initialize New Clarinet Project
@@ -193,6 +195,21 @@ See `patterns/clarity-testing.md` for detailed tool reference.
 | Stacks Explorer | Verify transactions, view contracts |
 | Stacks.js | Build and broadcast transactions |
 | Hiro API | Query chain data |
+
+## Contract Templates
+
+Step-by-step guides for specific contract types:
+
+| Contract Type | Runbook | Use Case |
+|---------------|---------|----------|
+| Heartbeat Registry | `runbook/clarity-heartbeat-registry.md` | Agent liveness, activity tracking |
+| Proof of Existence | `runbook/clarity-proof-of-existence.md` | Document timestamping, attestations |
+
+Common patterns extracted to `patterns/clarity-registry-contracts.md`:
+- Block snapshot pattern (full chain context capture)
+- Principal-keyed vs hash-keyed registries
+- Secondary index for enumeration
+- Global stats tracking
 
 ## Reference Contracts
 

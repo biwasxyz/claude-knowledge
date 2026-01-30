@@ -210,6 +210,33 @@ Comprehensive reference for Clarity smart contract development on Stacks.
 | `print` | Log value (for events) |
 | `at-block` | Read historic state |
 
+### Block Info Functions
+
+Query historical block data:
+
+```clarity
+;; Stacks block info (height must be < stacks-block-height)
+(get-stacks-block-info? property block-height)
+
+;; Properties: id-header-hash, header-hash, time, miner-address, block-reward
+(get-stacks-block-info? id-header-hash (- stacks-block-height u1))
+;; → (optional (buff 32))
+
+;; Bitcoin/burn block info (height must be < burn-block-height)
+(get-burn-block-info? property burn-height)
+
+;; Properties: header-hash, pox-addrs
+(get-burn-block-info? header-hash (- burn-block-height u1))
+;; → (optional (buff 32))
+```
+
+| Function | Properties | Returns |
+|----------|------------|---------|
+| `get-stacks-block-info?` | `id-header-hash`, `header-hash`, `time`, `miner-address`, `block-reward` | `(optional T)` |
+| `get-burn-block-info?` | `header-hash`, `pox-addrs` | `(optional T)` |
+
+**Note**: Query previous block (`height - 1`) because current block isn't finalized until after your tx.
+
 ## Execution Cost Limits
 
 | Category | Block | Read-Only |
