@@ -73,6 +73,9 @@ See `patterns/clarity-registry-contracts.md` for the block snapshot pattern.
 (define-data-var totalAddresses uint u0)
 (define-data-var totalCheckIns uint u0)
 
+;; Secondary index: index -> address (for enumeration)
+(define-map AddressIndex uint principal)
+
 ;; ---------------------------------------------------------
 ;; Private Functions
 ;; ---------------------------------------------------------
@@ -110,10 +113,13 @@ See `patterns/clarity-registry-contracts.md` for the block snapshot pattern.
     ;; Update registry
     (map-set Registry caller snapshot)
 
-    ;; Update counters
+    ;; Update counters and index
     (var-set totalCheckIns (+ (var-get totalCheckIns) u1))
     (if isNew
-      (var-set totalAddresses (+ (var-get totalAddresses) u1))
+      (begin
+        (map-set AddressIndex (var-get totalAddresses) caller)
+        (var-set totalAddresses (+ (var-get totalAddresses) u1))
+      )
       true
     )
 
@@ -165,6 +171,11 @@ See `patterns/clarity-registry-contracts.md` for the block snapshot pattern.
     totalAddresses: (var-get totalAddresses),
     totalCheckIns: (var-get totalCheckIns)
   }
+)
+
+;; Get address at index (for enumeration)
+(define-read-only (get-address-at (index uint))
+  (map-get? AddressIndex index)
 )
 
 ;; Get current chain state (useful for clients before submitting)
@@ -258,6 +269,27 @@ describe("heartbeat-registry", function () {
     }));
   });
 
+  it("enumerates registered addresses via index", function () {
+    const wallet1 = simnet.getAccounts().get("wallet_1")!;
+    const wallet2 = simnet.getAccounts().get("wallet_2")!;
+    const wallet3 = simnet.getAccounts().get("wallet_3")!;
+
+    simnet.callPublicFn(CONTRACT, "check-in", [], wallet1);
+    simnet.callPublicFn(CONTRACT, "check-in", [], wallet2);
+    simnet.callPublicFn(CONTRACT, "check-in", [], wallet3);
+
+    // Enumerate all registered addresses
+    const addr0 = simnet.callReadOnlyFn(CONTRACT, "get-address-at", [Cl.uint(0)], wallet1);
+    const addr1 = simnet.callReadOnlyFn(CONTRACT, "get-address-at", [Cl.uint(1)], wallet1);
+    const addr2 = simnet.callReadOnlyFn(CONTRACT, "get-address-at", [Cl.uint(2)], wallet1);
+    const addr3 = simnet.callReadOnlyFn(CONTRACT, "get-address-at", [Cl.uint(3)], wallet1);
+
+    expect(addr0.result).toBeSome(Cl.principal(wallet1));
+    expect(addr1.result).toBeSome(Cl.principal(wallet2));
+    expect(addr2.result).toBeSome(Cl.principal(wallet3));
+    expect(addr3.result).toBeNone(); // Out of bounds
+  });
+
   it("detects alive vs stale addresses", function () {
     const wallet1 = simnet.getAccounts().get("wallet_1")!;
 
@@ -318,6 +350,10 @@ clarinet console
 
 ;; Check stats
 (contract-call? .heartbeat-registry get-stats)
+
+;; Enumerate all registered addresses
+(contract-call? .heartbeat-registry get-address-at u0)
+(contract-call? .heartbeat-registry get-address-at u1)
 
 ;; Get current chain state
 (contract-call? .heartbeat-registry get-current-block-info)
@@ -398,6 +434,35 @@ async function getAgentStatus(address: string) {
     stacksBlockHash: data.stacksBlockHash,
     burnBlockHash: data.burnBlockHash,
   };
+}
+
+// Enumerate all registered addresses
+async function getAllRegisteredAddresses(): Promise<string[]> {
+  const stats = await callReadOnlyFunction({
+    contractAddress: CONTRACT_ADDRESS,
+    contractName: CONTRACT_NAME,
+    functionName: "get-stats",
+    functionArgs: [],
+    senderAddress: CONTRACT_ADDRESS,
+  });
+
+  const { totalAddresses } = cvToValue(stats);
+  const addresses: string[] = [];
+
+  for (let i = 0; i < Number(totalAddresses); i++) {
+    const result = await callReadOnlyFunction({
+      contractAddress: CONTRACT_ADDRESS,
+      contractName: CONTRACT_NAME,
+      functionName: "get-address-at",
+      functionArgs: [uintCV(i)],
+      senderAddress: CONTRACT_ADDRESS,
+    });
+
+    const addr = cvToValue(result);
+    if (addr) addresses.push(addr);
+  }
+
+  return addresses;
 }
 ```
 

@@ -438,7 +438,7 @@ Minimal registry contract combining these patterns:
 
 ## Related
 
-- `runbook/clarity-heartbeat-registry.md` - Principal-keyed heartbeat example
-- `runbook/clarity-proof-of-existence.md` - Hash-keyed attestation example
+- `runbook/clarity-heartbeat-registry.md` - Principal-keyed with address enumeration
+- `runbook/clarity-proof-of-existence.md` - Hash-keyed with attestor enumeration
 - `patterns/clarity-patterns.md` - Additional patterns (events, rate limiting, etc.)
 - `context/clarity-reference.md` - Language reference
