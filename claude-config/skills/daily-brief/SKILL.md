@@ -20,6 +20,7 @@ Reads and synthesizes logs from local `~/logs` and remote log APIs to orient you
 /daily-brief week --deep      # Weekly retrospective
 /daily-brief --remote         # Include remote worker logs
 /daily-brief --remote-only    # Only remote logs (skip local)
+/daily-brief --moltbook       # Include Moltbook feed/activity
 ```
 
 ## Modes
@@ -38,6 +39,13 @@ Deep mode means **better accuracy**, not more verbosity.
 
 ### Remote Mode (`--remote` or `--remote-only`)
 Fetches logs from remote worker-logs APIs. Use `--remote` to combine with local logs, or `--remote-only` for just remote.
+
+### Moltbook Mode (`--moltbook`)
+Includes Moltbook social activity in the brief:
+- Check personalized feed for new posts
+- Check for DM requests and unread messages
+- Surface interesting discussions in subscribed submolts
+- Note replies to our posts
 
 ## Log Sources
 
@@ -63,14 +71,25 @@ Three worker-logs instances with centralized logging from Cloudflare Workers:
 | aibtc.com (prod) | `https://logs.aibtc.com` | `~/dev/aibtcdev/worker-logs/.env` |
 | aibtc.dev (staging) | `https://logs.aibtc.dev` | `~/dev/aibtcdev/worker-logs/.env` |
 
+### Moltbook (Social)
+
+AI agent social network activity. Credentials at `~/.config/moltbook/credentials.json`.
+
+| Endpoint | Data |
+|----------|------|
+| `/api/v1/feed` | Personalized feed (subscribed submolts + followed moltys) |
+| `/api/v1/agents/dm/check` | Pending DM requests and unread messages |
+| `/api/v1/agents/status` | Claim status and profile info |
+
 ## Workflow
 
-1. **Parse arguments** - Date range, `--deep`, `--remote`, `--remote-only` flags
+1. **Parse arguments** - Date range, `--deep`, `--remote`, `--remote-only`, `--moltbook` flags
 2. **Read local daily summaries** - Primary source (already synthesized)
 3. **Fetch remote logs** - If `--remote` or `--remote-only` or `--deep`
-4. **Check open threads** - From logs, then verify with `gh` if `--deep`
-5. **Scan test logs** - Only flag failures not fixed by subsequent commits
-6. **Present brief** - Compact output focused on action
+4. **Check Moltbook** - If `--moltbook` flag is set
+5. **Check open threads** - From logs, then verify with `gh` if `--deep`
+6. **Scan test logs** - Only flag failures not fixed by subsequent commits
+7. **Present brief** - Compact output focused on action
 
 ### Remote Log Fetching
 
@@ -113,6 +132,32 @@ curl -s -H "X-Admin-Key: $ADMIN_API_KEY" https://logs.aibtc.dev/apps
 | `/apps/:app_id` | GET | Admin | Get app details |
 | `/logs` | GET | Admin + app_id param | Query logs with filters |
 | `/stats/:app_id` | GET | Admin | Daily stats (debug/info/warn/error counts) |
+
+### Moltbook Fetching
+
+To check Moltbook activity, use the helper script or direct API calls:
+
+```bash
+# Use helper script (recommended)
+~/dev/whoabuddy/moltbook/lib/check-feed.sh --brief
+
+# Or direct API calls
+API_KEY=$(jq -r .api_key ~/.config/moltbook/credentials.json)
+
+# Check claim status first
+curl -s "https://www.moltbook.com/api/v1/agents/status" \
+  -H "Authorization: Bearer $API_KEY"
+
+# Get personalized feed
+curl -s "https://www.moltbook.com/api/v1/feed?sort=new&limit=10" \
+  -H "Authorization: Bearer $API_KEY"
+
+# Check for DMs
+curl -s "https://www.moltbook.com/api/v1/agents/dm/check" \
+  -H "Authorization: Bearer $API_KEY"
+```
+
+**Important:** Always use `https://www.moltbook.com` (with `www`) - the non-www version strips auth headers.
 
 Query parameters for `/logs`:
 - `app_id` - Required when using admin key
@@ -160,6 +205,16 @@ Keep it compact. One format for both modes (deep just means more accurate).
 - [app-name] 12 errors: "Connection timeout to X"
 - [app-name] Spike in activity at 14:00 UTC
 
+## Moltbook Activity
+**Feed:** 5 new posts in subscribed submolts
+- "TIL: Context window optimization" (m/todayilearned)
+- "Question about Clarity error handling" (m/stacks)
+
+**Messages:** 1 pending DM request from @SomeMolty
+
+**Engagement opportunities:**
+- New molty in m/introductions working on Stacks
+
 ## Focus Areas
 - [Priority 1 based on momentum and open work]
 - [Priority 2]
@@ -169,6 +224,11 @@ Keep it compact. One format for both modes (deep just means more accurate).
 ```
 
 When remote logs have errors or notable patterns, surface them. Skip the Worker Activity section if all services are healthy with no errors.
+
+Skip the Moltbook Activity section if:
+- Agent is not yet claimed
+- No new activity since last check
+- `--moltbook` flag not specified
 
 ## Verifying Open Threads (Deep Mode)
 
@@ -251,3 +311,11 @@ Logs:
 - All three services use the same API (worker-logs codebase)
 - wbd.host is personal projects, aibtc.com/dev are AIBTC team projects
 - Staging (aibtc.dev) may have more test noise - weight production errors higher
+
+### Moltbook Tips
+
+- Use `--moltbook` when starting work to catch overnight discussions
+- Focus on posts in subscribed submolts (personalized feed)
+- Flag DM requests - they need human approval before responding
+- Note new moltys in relevant domains (Stacks, Clarity, etc.) for potential engagement
+- Don't include Moltbook section if agent is unclaimed or no activity

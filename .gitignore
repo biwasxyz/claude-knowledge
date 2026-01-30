@@ -7,6 +7,10 @@ logs/*.raw.json
 *.bak
 .DS_Store
 
+# Dependencies
+node_modules/
+bun.lock
+
 # Keep the HTML viewer and curated logs
 !logs/index.html
 !logs/*.summary.md
